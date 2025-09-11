@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Login</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 50px; }
+        .form-group { margin: 20px 0; }
+        input { padding: 10px; width: 300px; margin: 5px 0; }
+        button { padding: 10px 20px; background: #007bff; color: white; border: none; cursor: pointer; }
+        .error { color: red; margin: 10px 0; }
+        .success { color: green; margin: 10px 0; }
+    </style>
+</head>
+<body>
+    <h2>Test Login (No CSRF)</h2>
+    
+    <form method="POST" action="/test-login">
+        <div class="form-group">
+            <input type="text" name="username" placeholder="Username or Email" required>
+        </div>
+        <div class="form-group">
+            <input type="password" name="password" placeholder="Password" required>
+        </div>
+        <div class="form-group">
+            <button type="submit">Test Login</button>
+        </div>
+    </form>
+    
+    <div style="margin-top: 30px; padding: 20px; background: #f8f9fa; border-radius: 5px;">
+        <h3>Test Credentials:</h3>
+        <p><strong>Username:</strong> admin@barangay.com</p>
+        <p><strong>Password:</strong> password</p>
+    </div>
+    
+    <div style="margin-top: 20px;">
+        <h3>Test Links:</h3>
+        <p><a href="/test-dashboard">Test Dashboard (No Auth)</a></p>
+        <p><a href="/debug-session">Debug Session</a></p>
+        <p><a href="/login">Original Login</a></p>
+    </div>
+</body>
+</html>

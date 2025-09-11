@@ -1,0 +1,246 @@
+/* General Styles */
+body { 
+  font-family: Arial, sans-serif; 
+  background: #f5f5f5; 
+  margin:0; 
+  padding:0; 
+}
+
+header { 
+  background:#27ae60; 
+  color:#fff; 
+  display:flex; 
+  justify-content:space-between; 
+  align-items:center; 
+  padding:10px 20px; 
+}
+
+.logo { 
+  height:50px; 
+}
+
+.account-container a { 
+  color:#fff; 
+  text-decoration:none; 
+  font-weight:bold; 
+}
+
+.main-content { 
+  padding:20px; 
+  text-align:center; 
+}
+
+nav button { 
+  background:#27ae60; 
+  color:#fff; 
+  border:none; 
+  padding:10px 15px; 
+  margin:5px; 
+  cursor:pointer; 
+  border-radius:8px; 
+  transition:0.3s; 
+}
+
+nav button:hover { 
+  background:#2980b9; 
+}
+
+.section { 
+  display:none; 
+  padding:20px; 
+  background:#fff; 
+  margin:20px; 
+  border-radius:8px; 
+  box-shadow:0 2px 8px rgba(0,0,0,0.1); 
+}
+
+.back-btn { 
+  display:inline-block; 
+  margin-top:15px; 
+  color:#3498db; 
+  text-decoration:underline; 
+  cursor:pointer; 
+}
+
+table { 
+  width:100%; 
+  border-collapse:collapse; 
+  margin-top:20px; 
+}
+
+th, td { 
+  border:1px solid #ddd; 
+  padding:8px; 
+  text-align:center; 
+}
+
+th { 
+  background:#27ae60; 
+  color:#fff; 
+}
+
+input, form button { 
+  display:block; 
+  margin:10px auto; 
+  padding:10px; 
+  width:80%; 
+  max-width:400px; 
+}
+
+form button { 
+  background:#2ecc71; 
+  color:#fff; 
+  border:none; 
+  cursor:pointer; 
+  border-radius:8px; 
+}
+
+form button:hover { 
+  background:#27ae60; 
+}
+
+/* Modal */
+#modalContainer { 
+  position:fixed; 
+  top:0; 
+  left:0; 
+  right:0; 
+  bottom:0; 
+  background:rgba(0,0,0,0.6); 
+  display:none; 
+  justify-content:center; 
+  align-items:center; 
+  z-index:999; 
+}
+
+.modal { 
+  background:#fff; 
+  padding:30px; 
+  border-radius:10px; 
+  width:90%; 
+  max-width:400px; 
+  position:relative; 
+  animation:fadeIn 0.3s; 
+}
+
+.close-btn { 
+  position:absolute; 
+  top:10px; 
+  right:15px; 
+  font-size:20px; 
+  cursor:pointer; 
+}
+
+@keyframes fadeIn { 
+  from{opacity:0;transform:scale(0.8);} 
+  to{opacity:1;transform:scale(1);} 
+}
+
+/* --- New Login Styles --- */
+/* split-screen login */
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    font-family: Arial, sans-serif;
+}
+
+.login-wrapper {
+    display: flex;
+    height: 100%;
+}
+
+/* left half: full-cover background */
+.login-image {
+    flex: 1;
+    background: url('brgy1.jpg') no-repeat center center;
+    background-size: cover;
+}
+
+/* right half: green container */
+.login-box {
+    flex: 1;
+    background-color: #26c3e0; /* green background */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px;
+}
+
+/* Login form inside the white box */
+.login-form-container {
+    background-color: #fff; /* white background for the box */
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0px 4px 6px rgba(0,0,0,0.1);
+    width: 100%;
+    max-width: 400px; /* Restrict the width of the form */
+}
+
+.login-form-container h2 {
+    color: #333;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.login-form-container .error {
+    color: #c0392b;
+    margin-bottom: 15px;
+}
+
+.login-form-container input {
+    width: 100%;
+    padding: 12px;
+    margin: 8px 0;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.login-form-container button {
+    width: 100%;
+    padding: 12px;
+    margin-top: 12px;
+    background: #3498db;
+    border: none;
+    color: #fff;
+    font-size: 16px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.login-form-container button:hover {
+    background: #2980b9;
+}
+
+.signup-link {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.signup-link a {
+    color: #3498db;
+    text-decoration: underline;
+}
+
+.signup-link a:hover {
+    text-decoration: none;
+}
+
+@media (max-width: 768px) {
+    .login-wrapper {
+        flex-direction: column;
+    }
+
+    .login-image {
+        height: 50%;
+    }
+
+    .login-box {
+        height: 50%;
+        padding: 20px;
+    }
+
+    .login-form-container {
+        padding: 20px;
+    }
+}

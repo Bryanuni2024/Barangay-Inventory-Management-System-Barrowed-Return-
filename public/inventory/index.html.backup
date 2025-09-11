@@ -1,0 +1,1137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Barangay Inventory System</title>
+  <link rel="icon" type="image/png" href="assets/logo.jpg">
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background-color: #f9fdf9;
+    }
+/* Reset default margin/padding */
+
+/* Top Header */
+.top-header {
+  background-color: #28a745;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  color: white;
+}
+.logo-container .logo {
+  height: 40px;
+  border-radius: 10px;
+}
+
+.logout-btn {
+  background-color: #ffffff;       /* White background */
+  color: #06d730;                  /* Green text (matches theme) */
+  border: 2px solid #28a745;       /* Green border */
+  padding: 8px 16px;
+  border-radius: 20px;              /* Rounded box */
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1); /* Light shadow for visibility */
+}
+
+.logout-btn:hover {
+  color: #f40000;                     /* White text on hover */
+}
+
+
+.btn-nav {
+  background-color: #28a745;
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  margin: 0 5px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s;
+}
+
+.btn-nav:hover {
+  background-color: #218838;
+}
+
+    nav {
+  background-color: #247c24;
+  color: white;
+  padding: 10px 20px;
+}
+
+.nav-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+}
+
+    nav button {
+      background: transparent;
+      border: none;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+      padding: 8px 15px;
+      border-radius: 5px;
+      transition: background-color 0.3s ease;
+    }
+    nav button:hover,
+    nav button.active {
+      background-color: #4caf50;
+    }
+    nav .logout-btn {
+      margin-left: auto;
+      background-color: #c0392b;
+    }
+    nav .logout-btn:hover {
+      background-color: #e74c3c;
+    }
+    section {
+      display: none;
+      padding: 20px;
+    }
+    section.active {
+      display: block;
+    }
+    .stats-container {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+      margin-top: 15px;
+    }
+    .stat-box {
+      background-color: #1d8e21;
+      color: white;
+      padding: 20px;
+      border-radius: 8px;
+      flex: 1 1 150px;
+      text-align: center;
+      font-size: 18px;
+      font-weight: bold;
+    }
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin-top: 15px;
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: left;
+      vertical-align: middle;
+      text-align: center;
+    }
+    th {
+      background-color: #4caf50;
+      color: white;
+    }
+    .btn {
+      padding: 5px 10px;
+      margin-right: 5px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+      color: white;
+      transition: background-color 0.3s ease;
+    }
+    .btn-edit:hover {
+      background-color: #45a045;
+    }
+    .btn-delete {
+      background-color: #e74c3c;
+    }
+    .btn-delete:hover {
+      background-color: #c0392b;
+    }
+    .btn-borrow {
+      background-color: #2e86c1;
+    }
+    .btn-borrow:hover {
+      background-color: #2874a6;
+    }
+    .btn-extend {
+      background-color: #f39c12;
+    }
+    .btn-extend:hover {
+      background-color: #d68910;
+    }
+    .btn-return {
+      background-color: #27ae60;
+    }
+    .btn-return1 {
+      background-color: #27ae60;
+    }
+    .btn-return:hover {
+      background-color: #219150;
+    }
+    .btn-return1:hover {
+      background-color: #219150;
+    }
+    .table-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 15px;
+      margin-bottom: 10px;
+    }
+    .table-actions button {
+      background-color: #4caf50;
+      color: white;
+      padding: 8px 16px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 15px;
+      transition: background-color 0.3s ease;
+    }
+    .table-actions button:hover {
+      background-color: #45a045;
+    }
+    .search-input {
+      padding: 7px 12px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 15px;
+      width: 200px;
+    }
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-content {
+  background-color: #fff;
+  margin: 10% auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 400px;
+  border-radius: 10px;
+  position: relative;
+}
+
+.modal-content h3 {
+  margin-top: 0;
+}
+
+.close {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  font-size: 24px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+/* Fixing your broken selector and adding modal actions */
+.modal-actions button:hover {
+  background-color: #45a045;
+}
+
+/* New styles to complete your modal inputs and button */
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-control {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+.modal-actions {
+  text-align: right;
+  margin-top: 20px;
+}
+
+.btn-edit {
+  background-color: #4CAF50; /* Your green */
+  color: white;
+  border: none;
+  padding: 8px 18px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 14px;
+  transition: background-color 0.3s ease;
+}
+
+.search-input {
+      padding: 7px 12px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 15px;
+      width: 200px;
+}
+
+h3 {
+  margin-left: 10px;
+}
+/* Modal Styles */
+  .modal {
+    display: none;
+    position: fixed;
+    z-index: 9999;
+    padding-top: 60px;
+    left: 0; top: 0;
+    width: 100%; height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.5);
+  }
+  .modal-content {
+    background-color: #fefefe;
+    margin: auto;
+    padding: 20px 30px;
+    border-radius: 8px;
+    max-width: 400px;
+    position: relative;
+  }
+  .close {
+    color: #aaa;
+    float: right;
+    font-size: 24px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  .close:hover {
+    color: #000;
+  }
+  label input {
+    width: 100%;
+    padding: 6px;
+    margin-top: 4px;
+    box-sizing: border-box;
+  }
+  .btn-return, .btn-return1, .btn-return-car {
+  background-color: #28a745; /* green */
+  color: rgb(255, 255, 255);
+  border: none;
+  padding: 8px 12px;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+}
+
+.btn-return:hover, .btn-return1:hover, .btn-return-car:hover {
+  background-color: #218838; /* darker green on hover */
+}
+
+.btn-return:active, .btn-return1:active, .btn-return-car:active,
+.btn-return:focus, .btn-return1:focus, .btn-return-car:focus {
+  background-color: #1e7e34; /* even darker on click/focus */
+  outline: none;
+}
+
+.btn-confirm {
+  background-color: #007bff; /* blue */
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  font-size: 16px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+.btn-confirm:focus, .btn-confirm:active {
+  outline: none;
+  opacity: 1;  /* Keep full opacity */
+  background-color: #004080; /* or whatever you want */
+}
+
+.btn-confirm:hover {
+  background-color: #0056b3; /* darker blue on hover */
+}
+
+.btn-confirm:active, .btn-confirm:focus {
+  background-color: #004080; /* even darker on active/focus */
+  outline: none;
+}
+
+.btn-return-confirm {
+  background-color: #4CAF50; /* Green */
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+.btn-return-confirm:hover {
+  background-color: #45a049; /* Slightly darker green on hover */
+}
+
+  </style>
+</head>
+<body>
+<!-- Top Header -->
+<header class="top-header">
+  <div class="logo-container">
+    <img src="assets/logo1.png" alt="Logo" class="logo" />
+  </div>
+    <button class="logout-btn" id="logoutBtn">Logout</button>
+</header>
+
+<!-- Navigation Buttons -->
+<nav class="nav-buttons">
+  <div class="nav-center">
+    <button id="dashboardBtn" class="active">Dashboard</button>
+    <button id="itemListBtn">Item List</button>
+    <button id="carListBtn">Car List</button>
+    <button id="borrowedItemsBtn">Borrowed Items</button>
+    <button id="borrowedCarsBtn">Borrowed Cars</button>
+    <button id="reportBtn">Report</button>
+    </div>
+</nav>
+
+  <!-- Dashboard Section -->
+  <section id="dashboardSection" class="active">
+    <h2>Dashboard</h2>
+    <div class="stats-container">
+      <div class="stat-box">Total Items: 5</div>
+      <div class="stat-box">Total Cars: 5</div>
+      <div class="stat-box">Borrowed Items: 4</div>
+      <div class="stat-box">Borrowed Cars: 3</div>
+      <div class="stat-box">Reports Generated: 3</div>
+    </div>
+      <div  id="dashboardSection" class="content-section">
+    <div style="margin-top: 30px; width: 80%; max-width: 70%;">
+      <h3 >Inventory Overview</h3>
+      <canvas id="dashboardChart"></canvas>
+    </div>
+  </div>
+  </section>
+
+
+
+
+  <!-- Item List Section -->
+  <section id="itemListSection">
+    <h2>Item List</h2>
+    <div class="table-actions">
+      <button id="addItemBtn">Add Item</button>
+      <input type="text" id="itemSearch" class="search-input" placeholder="Search Items..." />
+    </div>
+    <table id="itemTable">
+      <thead>
+        <tr>
+          <th>Item ID</th>
+          <th>Name</th>
+          <th>Category</th>
+          <th>Quantity</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Data will be loaded dynamically from database -->
+      </tbody>
+    </table>
+  </section>
+
+  <!-- Car List Section -->
+  <section id="carListSection">
+    <h2>Car List</h2>
+    <div class="table-actions">
+      <button id="addCarBtn">Add Car</button>
+      <input type="text" id="carSearch" class="search-input" placeholder="Search Cars..." />
+    </div>
+    <table id="carTable">
+      <thead>
+        <tr>
+          <th>Car ID</th>
+          <th>Make & Model</th>
+          <th>Year</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Data will be loaded dynamically from database -->
+      </tbody>
+    </table>
+  </section>
+
+  <!-- Borrowed Items Section -->
+  <section id="borrowedItemsSection">
+    <h2>Borrowed Items</h2>
+    <input type="text" id="itemSearch" class="search-input" placeholder="Search Items..." />
+    <table>
+      <thead>
+        <tr>
+          <th>Borrow ID</th>
+          <th>Item Name</th>
+          <th>Borrower</th>
+          <th>Date Borrowed</th>
+          <th>Due Date</th>
+          <th>Status</th>
+          <th>Quantity</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Data will be loaded dynamically from database -->
+      </tbody>
+    </table>
+  </section>
+
+<!-- Somewhere inside Borrowed Cars  -->
+<section id="borrowedCarsSection" class="section">
+  <h2>Borrowed Cars List</h2>
+  <input type="text" id="carSearch" class="search-input" placeholder="Search Cars..." />
+  <table id="borrowedCarsTable">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Make & Model</th>
+        <th>Borrowed Date</th>
+        <th>Due Date</th>
+        <th>Status</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Data will be loaded dynamically from database -->
+      <!-- Add more rows as needed -->
+    </tbody>
+  </table>
+</section>
+
+<!-- Report Section -->
+<section id="reportSection" class="section">
+  <!-- Reports Section -->
+<div id="reports" class="section" style="padding: 20px;">
+  <h2 style="text-align: center; color: #2c3e50;">📄 Reports</h2>
+  
+  <div class="report-actions" style="margin-top: 20px; display: flex; flex-direction: column; gap: 20px; align-items: center;">
+    
+    <!-- Item List -->
+    <div style="display: flex; gap: 10px;">
+      <button onclick="printReport('itemList')" style="padding: 10px 20px; background-color: #27ae60; color: white; border: none; border-radius: 5px;">🖨️ Print Item List Report</button>
+      <button onclick="exportCSV('itemList', 'item_list_report.csv')" style="padding: 10px 20px; background-color: #2980b9; color: white; border: none; border-radius: 5px;">💾 Save Item List Report</button>
+    </div>
+
+    <!-- Car List -->
+    <div style="display: flex; gap: 10px;">
+      <button onclick="printReport('carList')" style="padding: 10px 20px; background-color: #27ae60; color: white; border: none; border-radius: 5px;">🖨️ Print Car List Report</button>
+      <button onclick="exportCSV('carList', 'car_list_report.csv')" style="padding: 10px 20px; background-color: #2980b9; color: white; border: none; border-radius: 5px;">💾 Save Car List Report</button>
+    </div>
+
+    <!-- Borrowed Items -->
+    <div style="display: flex; gap: 10px;">
+      <button onclick="printReport('borrowedItemList')" style="padding: 10px 20px; background-color: #27ae60; color: white; border: none; border-radius: 5px;">🖨️ Print Borrowed Items Report</button>
+      <button onclick="exportCSV('borrowedItemList', 'borrowed_items_report.csv')" style="padding: 10px 20px; background-color: #2980b9; color: white; border: none; border-radius: 5px;">💾 Save Borrowed Items Report</button>
+    </div>
+
+    <!-- Borrowed Cars -->
+    <div style="display: flex; gap: 10px;">
+      <button onclick="printReport('borrowedCarList')" style="padding: 10px 20px; background-color: #27ae60; color: white; border: none; border-radius: 5px;">🖨️ Print Borrowed Cars Report</button>
+      <button onclick="exportCSV('borrowedCarList', 'borrowed_cars_report.csv')" style="padding: 10px 20px; background-color: #2980b9; color: white; border: none; border-radius: 5px;">💾 Save Borrowed Cars Report</button>
+    </div>
+  </div>
+
+</section>
+
+<!-- Add Item Modal -->
+<div id="addItemModal" class="modal">
+  <div class="modal-content">
+    <span class="close" data-close="addItemModal">&times;</span>
+    <h3>Add Item</h3>
+    <form id="addItemForm">
+      <label>Item Name: <input type="text" name="itemName" required></label><br><br>
+      <label>Category: <input type="text" name="itemName" required></label><br><br>
+      <label>Quantity: <input type="number" name="quantity" min="1" required></label><br><br>
+      <button type="submit" class="btn btn-borrow">Add Item</button>
+    </form>
+  </div>
+</div>
+
+<!-- Add Car Modal -->
+<div id="addCarModal" class="modal">
+  <div class="modal-content">
+    <span class="close" data-close="addCarModal">&times;</span>
+    <h3>Add Car</h3>
+    <form id="addCarForm">
+      <label>Make & Model: <input type="text" name="carModel" required></label><br><br>
+      <label>Year: <input type="text" name="plateNumber" required></label><br><br>
+      <label>Status: <input type="text" name="plateNumber" required></label><br><br>
+      <button type="submit" class="btn btn-borrow">Add Car</button>
+    </form>
+  </div>
+</div>
+
+<!-- Edit Item Modal -->
+<div id="editItemModal" class="modal">
+  <div class="modal-content">
+    <span class="close" data-close="editItemModal">&times;</span>
+    <h3>Edit Item</h3>
+    <form id="editItemForm">
+      <input type="hidden" name="itemId" />
+      <label>Item Name: <input type="text" name="itemName" required></label><br><br>
+      <label>Category: <input type="text" name="itemName" required></label><br><br>
+      <label>Quantity: <input type="number" name="quantity" min="1" required></label><br><br>
+      <button type="submit" class="btn btn-borrow">Save Changes</button>
+    </form>
+  </div>
+</div>
+
+<!-- Edit Car Modal -->
+<div id="editCarModal" class="modal">
+  <div class="modal-content">
+    <span class="close" data-close="editCarModal">&times;</span>
+    <h3>Edit Car</h3>
+    <form id="editCarForm">
+      <!-- Hidden Car ID for backend reference -->
+      <input type="hidden" name="carId">
+
+      <div class="form-group">
+        <label for="editCarModel">Make & Model:</label>
+        <input type="text" id="editCarModel" name="carModel" class="form-control" required>
+      </div>
+
+      <div class="form-group">
+        <label for="editPlateNumber">Year:</label>
+        <input type="text" id="editPlateNumber" name="plateNumber" class="form-control" required>
+      </div>
+
+      <div class="form-group">
+        <label for="editPlateNumber">Status:</label>
+        <input type="text" id="editPlateNumber" name="plateNumber" class="form-control" required>
+      </div>
+
+      <div class="modal-actions">
+        <button type="submit" class="btn btn-edit">Save Changes</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+
+<!-- Borrow Item Modal -->
+<div id="borrowItemModal" class="modal">
+  <div class="modal-content">
+    <span class="close" data-close="borrowItemModal">&times;</span>
+    <h3>Borrow Item</h3>
+    <form id="borrowItemForm">
+      <input type="hidden" name="itemId" />
+      <label>Borrower Name: <input type="text" name="borrowerName" required></label><br><br>
+      <label>Quantity: <input type="text" name="borrowerName" required></label><br><br>
+      <label>Borrow Date: <input type="date" name="borrowDate" required></label><br><br>
+      <label>Return Date: <input type="date" name="borrowDate" required></label><br><br>
+      <button type="submit" class="btn btn-borrow">Confirm Borrow</button>
+    </form>
+  </div>
+</div>
+
+<!-- Borrow Car Modal -->
+<div id="borrowCarModal" class="modal">
+  <div class="modal-content">
+    <span class="close" data-close="borrowCarModal">&times;</span>
+    <h3>Borrow Car</h3>
+    <form id="borrowCarForm">
+      <input type="hidden" name="carId" />
+      <label>Borrower Name: <input type="text" name="borrowerName" required></label><br><br>
+      <label>Destination: <input type="text" name="borrowerName" required></label><br><br>
+      <label>Travel Purpose: <input type="text" name="borrowerName" required></label><br><br>
+      <label>Borrow Date: <input type="date" name="borrowDate" required></label><br><br>
+      <label>Return Date: <input type="date" name="borrowDate" required></label><br><br>
+      <button type="submit" class="btn btn-borrow">Confirm Borrow</button>
+    </form>
+  </div>
+</div>
+
+<!-- Extend Borrow Confirmation Modal
+<div id="extendModal" class="modal">
+  <div class="modal-content">
+    <span class="close" data-close="extendModal">&times;</span>
+    <h3>Extend Borrow</h3>
+    <p>Are you sure you want to extend this borrow?</p>
+    <button id="confirmExtend" class="btn btn-extend">Yes, Extend</button>
+    <button class="btn" data-close="extendModal">Cancel</button>
+  </div>
+</div>
+-->
+<!-- Return Borrow Confirmation Modal for item-->
+<div id="returnModal" class="modal">
+  <div class="modal-content">
+    <span class="close" data-close="returnModal">&times;</span>
+    <h3>Return Borrow</h3>
+    <p>Are you sure you want to return this item?</p>
+    <button id="confirmReturn" class="btn btn-return">Yes, Return</button>
+  </div>
+</div>
+
+<!-- Your Return Modal -->
+<div id="returnCarModal" class="modal">
+  <div class="modal-content">
+    <span class="close" data-close="returnCarModal">&times;</span>
+    <h3>Return Borrowed Car</h3>
+    <p>Are you sure you want to return this car?</p>
+    <button id="confirmReturnCar" class="btn btn-return-confirm">Yes, Return</button>
+  </div>
+</div>
+
+<!-- Extend Borrow Modal -->
+<div id="extendModal" class="modal" style="display:none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.5); justify-content:center; align-items:center;">
+  <div style="background: white; padding: 20px; border-radius: 8px; width: 300px; text-align:center; position: relative;">
+    
+    <!-- Close Button -->
+    <span id="closeExtendBtn" style="position:absolute; top:10px; right:15px; font-size:20px; cursor:pointer; color:#555;">&times;</span>
+    
+    <h3 id="cancelExtendBtn">Extend Borrow Time</h3>
+    <label for="newReturnDate">New Return Date:</label><br>
+    <input type="date" id="newReturnDate" name="newReturnDate" required style="margin: 10px 0; width: 100%; padding: 5px;"><br>
+    <button id="confirmExtendBtn" class="btn btn-extend-confirm" style="background-color:#3a6f3a; color:white; padding:8px 15px; border:none; border-radius:4px; cursor:pointer;">
+      Confirm Extend
+    </button>
+  </div>
+</div>
+
+
+
+<script>
+  // Navigation buttons & section toggling
+  const sections = {
+    dashboardBtn: 'dashboardSection',
+    itemListBtn: 'itemListSection',
+    carListBtn: 'carListSection',
+    borrowedItemsBtn: 'borrowedItemsSection',
+    borrowedCarsBtn: 'borrowedCarsSection',
+    reportBtn: 'reportSection',
+  };
+
+  for (const btnId in sections) {
+    document.getElementById(btnId).addEventListener('click', () => {
+      // Remove active class on all nav buttons and hide sections
+      Object.keys(sections).forEach(id => {
+        document.getElementById(id).classList.remove('active');
+        document.getElementById(sections[id]).classList.remove('active');
+      });
+      // Activate clicked nav button and show its section
+      document.getElementById(btnId).classList.add('active');
+      document.getElementById(sections[btnId]).classList.add('active');
+    });
+  }
+
+  // Search filters (Item List)
+  document.getElementById('itemSearch').addEventListener('input', function () {
+    const filter = this.value.toLowerCase();
+    const rows = document.querySelectorAll('#itemTable tbody tr');
+    rows.forEach(row => {
+      const text = row.textContent.toLowerCase();
+      row.style.display = text.includes(filter) ? '' : 'none';
+    });
+  });
+
+  // Search filters (Car List)
+  document.getElementById('carSearch').addEventListener('input', function () {
+    const filter = this.value.toLowerCase();
+    const rows = document.querySelectorAll('#carTable tbody tr');
+    rows.forEach(row => {
+      const text = row.textContent.toLowerCase();
+      row.style.display = text.includes(filter) ? '' : 'none';
+    });
+  });
+  // Confirmation for Delete
+document.querySelectorAll('.btn-delete').forEach(btn => {
+      btn.addEventListener('click', function () {
+        if (confirm('Are you sure you want to delete this item?')) {
+          alert('Item deleted');
+        }
+      });
+    });
+  // Placeholder event handlers
+  //document.getElementById('addItemBtn').addEventListener('click', () => {
+    //alert('Add Item button clicked.');
+  //});
+  //document.getElementById('addCarBtn').addEventListener('click', () => {
+   // alert('Add Car button clicked.');
+  //});
+
+document.getElementById("logoutBtn").addEventListener("click", function () {
+    const confirmLogout = confirm("Are you sure you want to log out?");
+    if (confirmLogout) {
+      // Optional: Clear sessionStorage/localStorage if used
+      window.location.href = "login.html";
+    }
+  });
+
+// Modal open function
+function openModal(id) {
+  document.getElementById(id).style.display = 'block';
+}
+// Modal close function
+function closeModal(id) {
+  document.getElementById(id).style.display = 'none';
+}
+// Close modals when clicking on X or Cancel buttons
+document.querySelectorAll('.close, [data-close]').forEach(el => {
+  el.addEventListener('click', (e) => {
+    const targetId = e.target.getAttribute('data-close') || e.target.parentElement.parentElement.id;
+    closeModal(targetId);
+  });
+});
+// Close modal if click outside modal content
+window.addEventListener('click', (e) => {
+  if (e.target.classList.contains('modal')) {
+    closeModal(e.target.id);
+  }
+});
+
+// Example: Hook up buttons in your interface to open modals
+
+// Add Item button
+document.getElementById('addItemBtn').addEventListener('click', () => openModal('addItemModal'));
+// Add Car button
+document.getElementById('addCarBtn').addEventListener('click', () => openModal('addCarModal'));
+
+// Example: For Edit, Borrow buttons in your tables,
+// you need to add event listeners dynamically or inline on buttons,
+// passing the item/car data as needed.
+
+// For example, assuming your Edit buttons have class 'edit-item-btn' and a data-id attribute:
+document.querySelectorAll('.edit-item-btn').forEach(btn => {
+      btn.classList.add('btn', 'btn-edit');
+      btn.addEventListener('click', function () {
+        document.getElementById('editItemModal').style.display = 'block';
+      });
+    });
+
+  document.querySelectorAll('.edit-car-btn').forEach(btn => {
+    btn.classList.add('btn', 'btn-edit'); // same as item list styling
+    btn.addEventListener('click', function () {
+      document.getElementById('editCarModal').style.display = 'block';
+    });
+  });
+
+
+
+// Borrow buttons (similar)
+document.querySelectorAll('.borrow-item-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const itemId = btn.dataset.id;
+    document.querySelector('#borrowItemForm [name="itemId"]').value = itemId;
+    openModal('borrowItemModal');
+  });
+});
+document.querySelectorAll('.borrow-car-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const carId = btn.dataset.id;
+    document.querySelector('#borrowCarForm [name="carId"]').value = carId;
+    openModal('borrowCarModal');
+  });
+});
+
+// Extend confirmation
+//document.querySelectorAll('.btn-extend').forEach(btn => {
+//  btn.addEventListener('click', () => openModal('extendModal'));
+//});
+//document.getElementById('confirmExtend').addEventListener('click', () => {
+ // alert('Borrow extended!');
+//  closeModal('extendModal');
+//});
+
+// Return confirmation
+document.querySelectorAll('.btn-return').forEach(btn => {
+  btn.addEventListener('click', () => openModal('returnModal'));
+});
+document.getElementById('confirmReturn').addEventListener('click', () => {
+  alert('Item returned!');
+  closeModal('returnModal');
+});
+
+// for car return
+
+document.addEventListener('DOMContentLoaded', () => {
+  const modal = document.getElementById('returnCarModal');
+  const closeButtons = modal.querySelectorAll('[data-close="returnCarModal"]');
+  const confirmBtn = document.getElementById('confirmReturnCar');
+  let currentRow = null;
+
+  // Open modal on clicking any Return button for cars
+  document.querySelectorAll('.btn-return-car').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      currentRow = e.target.closest('tr');
+      modal.style.display = 'block';
+    });
+  });
+
+  // Close modal on clicking close buttons or cancel
+  closeButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      modal.style.display = 'none';
+      currentRow = null;
+    });
+  });
+
+  // Confirm return button logic
+  confirmBtn.addEventListener('click', () => {
+    if (currentRow) {
+      // For example, hide the returned row (or update status as needed)
+      currentRow.style.display = 'none'; // simple visual removal
+      alert('Car successfully returned!');
+    }
+    modal.style.display = 'none';
+    currentRow = null;
+  });
+
+  // Close modal if click outside modal content
+  window.addEventListener('click', (e) => {
+    if (e.target === modal) {
+      modal.style.display = 'none';
+      currentRow = null;
+    }
+  });
+});
+
+
+// Example form submit handlers (replace with real logic)
+document.getElementById('addItemForm').addEventListener('submit', e => {
+  e.preventDefault();
+  alert('Item added!');
+  closeModal('addItemModal');
+});
+document.getElementById('addCarForm').addEventListener('submit', e => {
+  e.preventDefault();
+  alert('Car added!');
+  closeModal('addCarModal');
+});
+document.getElementById('editItemForm').addEventListener('submit', e => {
+  e.preventDefault();
+  alert('Item edited!');
+  closeModal('editItemModal');
+});
+document.getElementById('editCarForm').addEventListener('submit', e => {
+  e.preventDefault();
+  alert('Car edited!');
+  closeModal('editCarModal');
+});
+// Utility to open modal by ID
+function openModal(id) {
+  document.getElementById(id).style.display = 'block';
+}
+
+// Utility to close modal by ID
+function closeModal(id) {
+  document.getElementById(id).style.display = 'none';
+}
+
+// Close modal on clicking the close button (X)
+document.querySelectorAll('.close').forEach(span => {
+  span.addEventListener('click', () => {
+    const modalId = span.getAttribute('data-close');
+    closeModal(modalId);
+  });
+});
+
+// Open Borrow Item modal when clicking an Item Borrow button
+document.querySelectorAll('#itemListSection .btn-borrow').forEach(btn => {
+  btn.addEventListener('click', e => {
+    // Find the item ID from the same row
+    const tr = e.target.closest('tr');
+    const itemId = tr.children[0].textContent.trim();
+
+    // Fill hidden input in borrow item modal
+    document.querySelector('#borrowItemModal input[name="itemId"]').value = itemId;
+
+    // Open modal
+    openModal('borrowItemModal');
+  });
+});
+
+// Open Borrow Car modal when clicking a Car Borrow button
+document.querySelectorAll('#carListSection .btn-borrow').forEach(btn => {
+  btn.addEventListener('click', e => {
+    // Find the car ID from the same row
+    const tr = e.target.closest('tr');
+    const carId = tr.children[0].textContent.trim();
+
+    // Fill hidden input in borrow car modal
+    document.querySelector('#borrowCarModal input[name="carId"]').value = carId;
+
+    // Open modal
+    openModal('borrowCarModal');
+  });
+});
+
+// Your existing submit handlers (unchanged)
+document.getElementById('borrowItemForm').addEventListener('submit', e => {
+  e.preventDefault();
+  alert('Item borrowed!');
+  closeModal('borrowItemModal');
+});
+document.getElementById('borrowCarForm').addEventListener('submit', e => {
+  e.preventDefault();
+  alert('Car borrowed!');
+  closeModal('borrowCarModal');
+});
+
+// Print Report Function
+function printReport(tableId) {
+    const table = document.getElementById(tableId);
+    const printWindow = window.open('', '', 'height=600,width=800');
+    printWindow.document.write('<html><head><title>' + tableId + ' Report</title>');
+    printWindow.document.write('<style>table {width: 100%; border-collapse: collapse;} th, td {padding: 10px; border: 1px solid #ddd;} h2 {text-align: center;}</style>');
+    printWindow.document.write('</head><body>');
+    printWindow.document.write('<h2>' + tableId.replace(/([A-Z])/g, ' $1').trim() + ' Report</h2>');
+    printWindow.document.write(table.outerHTML);
+    printWindow.document.write('</body></html>');
+    printWindow.document.close();
+    printWindow.print();
+}
+
+function exportCSV(tableId, filename = 'report.csv') {
+  const confirmDownload = confirm("Do you want to download the report as a CSV file?");
+  if (!confirmDownload) return;
+
+  const table = document.getElementById(tableId);
+  let csv = '';
+
+  // Loop through the rows of the table
+  for (let row of table.rows) {
+    let rowData = [];
+
+    // Loop through the cells in the row
+    for (let cell of row.cells) {
+      rowData.push(`"${cell.innerText.replace(/"/g, '""')}"`);
+    }
+
+    csv += rowData.join(',') + '\n';
+  }
+
+  // Create a Blob from the CSV data
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+
+  // Create an anchor tag to trigger the download
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  a.style.display = 'none';
+  document.body.appendChild(a);
+  a.click();
+
+  // Clean up by removing the anchor tag
+  document.body.removeChild(a);
+}
+
+//for graph
+
+const ctx = document.getElementById('dashboardChart').getContext('2d');
+  new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: ['Total Items', 'Total Cars', 'Borrowed Items', 'Borrowed Cars', 'Reports'],
+      datasets: [{
+        label: 'Dashboard Stats',
+        data: [5, 5, 4, 3, 3],
+        backgroundColor: [
+          '#4caf50',
+          '#2196f3',
+          '#ff9800',
+          '#9c27b0',
+          '#f44336'
+        ],
+        borderRadius: 5
+      }]
+    },
+    options: {
+      responsive: true,
+      scales: {
+        y: {
+          beginAtZero: true,
+          ticks: {
+            stepSize: 1
+          }
+        }
+      }
+    }
+  });
+//for extend
+
+// Get modal and buttons
+const extendModal = document.getElementById('extendModal');
+const confirmExtendBtn = document.getElementById('confirmExtendBtn');
+const cancelExtendBtn = document.getElementById('cancelExtendBtn');
+
+// Select all extend buttons
+const extendButtons = document.querySelectorAll('.btn-extend');
+
+// Function to open modal with data
+function openExtendModal(borrowId, currentReturn) {
+  // Store borrowId on modal dataset for later use
+  extendModal.dataset.borrowId = borrowId;
+
+  // Set current return date in input field
+  document.getElementById('newReturnDate').value = currentReturn || '';
+
+  // Show modal
+  extendModal.style.display = 'flex';
+}
+
+// Attach click event to each Extend button
+extendButtons.forEach(button => {
+  button.addEventListener('click', () => {
+    const borrowId = button.getAttribute('data-borrow-id');
+    const currentReturn = button.getAttribute('data-current-return');
+
+    openExtendModal(borrowId, currentReturn);
+  });
+});
+
+// Close modal on cancel button click
+cancelExtendBtn.addEventListener('click', () => {
+  extendModal.style.display = 'none';
+});
+
+// Close modal if user clicks outside modal content
+window.addEventListener('click', (event) => {
+  if (event.target === extendModal) {
+    extendModal.style.display = 'none';
+  }
+});
+const closeExtendBtn = document.getElementById('closeExtendBtn');
+
+closeExtendBtn.addEventListener('click', () => {
+  extendModal.style.display = 'none';
+});
+
+
+// Confirm button click handler
+confirmExtendBtn.addEventListener('click', () => {
+  const newDate = document.getElementById('newReturnDate').value;
+  const borrowId = extendModal.dataset.borrowId; // get borrow id
+
+  if (newDate) {
+    // TODO: Add your extend borrow logic here (e.g., send borrowId and newDate to server)
+    alert(`Borrow ID ${borrowId} extended to: ${newDate}`);
+    extendModal.style.display = 'none';
+  } else {
+    alert('Please select a new return date');
+  }
+});
+
+</script>
+
