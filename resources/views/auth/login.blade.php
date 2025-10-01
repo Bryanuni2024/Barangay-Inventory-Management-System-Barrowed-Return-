@@ -8,6 +8,103 @@
   <title>Login</title>
   <link rel="stylesheet" href="{{ asset('inventory/assets/style.css') }}">
   <link rel="icon" type="image/jpg" href="{{ asset('inventory/assets/logo.jpg') }}">
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      display: flex;
+      height: 100vh;
+    }
+
+    .login-wrapper {
+      display: flex;
+      width: 100%;
+    }
+
+    .login-image {
+      flex: 1;
+      background: url('{{ asset('inventory/assets/brgy1.jpg') }}') no-repeat center center;
+      background-size: cover;
+    }
+
+    .login-box {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #0abdea;
+    }
+
+    .login-form-container {
+      background: #fff;
+      padding: 40px;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      width: 350px;
+      text-align: center;
+    }
+
+    .login-form-container h2 {
+      margin-bottom: 20px;
+      color: #333;
+    }
+
+    .login-form-container input {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 14px;
+    }
+
+    .password-wrapper {
+      position: relative;
+    }
+
+    .password-wrapper input {
+      width: 100%;
+    }
+
+    .toggle-password {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      cursor: pointer;
+      font-size: 14px;
+      color: #888;
+    }
+
+    .login-form-container button {
+      width: 100%;
+      padding: 12px;
+      background: #3498db;
+      color: #fff;
+      border: none;
+      margin-left: 14px;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .login-form-container button:hover {
+      background: #2980b9;
+    }
+
+    .error {
+      color: red;
+      margin-bottom: 10px;
+      font-size: 14px;
+    }
+
+    .success {
+      color: green;
+      margin-bottom: 10px;
+      font-size: 14px;
+    }
+  </style>
 </head>
 <body>
   <div class="login-wrapper">
@@ -23,44 +120,49 @@
         @endif
         <form method="POST" action="/test-login">
           <input type="text" name="username" placeholder="Username or Email" required>
-          <input type="password" name="password" placeholder="Password" required>
-          <button type="submit">Sign In</button>
+          
+          <div class="password-wrapper">
+            <input type="password" id="password" name="password" placeholder="Password" required>
+            <span class="toggle-password" onclick="togglePassword()">👁</span>
+          </div>
+          
+          <button  type="submit">Sign In</button>
         </form>
-        {{-- <div style="margin-top: 15px; padding: 10px; background: #f8f9fa; border-radius: 5px; font-size: 12px; color: #666;">
-          <strong>Demo Credentials:</strong><br>
-          Username: admin@barangay.com<br>
-          Password: password
-        </div> --}}
       </div>
     </div>
   </div>
 
   <script>
+    // Show/Hide password toggle
+    function togglePassword() {
+      const passwordInput = document.getElementById("password");
+      const toggleIcon = document.querySelector(".toggle-password");
+      if (passwordInput.type === "password") {
+        passwordInput.type = "text";
+        toggleIcon.textContent = "🙈";
+      } else {
+        passwordInput.type = "password";
+        toggleIcon.textContent = "👁";
+      }
+    }
+
     // Prevent back button access to login page after logout
     window.addEventListener('pageshow', function(event) {
-      // Check if the page was loaded from cache (back button)
       if (event.persisted) {
-        // Force reload to ensure fresh authentication check
         window.location.reload();
       }
     });
 
-    // Clear any cached data when page loads
     window.addEventListener('load', function() {
-      // Clear browser cache for this page
       if (window.performance && window.performance.navigation.type === 1) {
-        // Page was refreshed, clear any cached data
         sessionStorage.clear();
         localStorage.removeItem('user_session');
       }
     });
 
-    // Prevent form resubmission on page refresh
     if (window.history.replaceState) {
       window.history.replaceState(null, null, window.location.href);
     }
   </script>
 </body>
 </html>
-
-

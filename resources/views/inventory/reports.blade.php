@@ -6,27 +6,25 @@
 <section>
   <h2 style="text-align: center; color: #2c3e50;">Reports</h2>
   
-  <!-- Report Summary -->
-  <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; margin: 20px 0;">
-    <h3>Report Summary</h3>
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 15px;">
-      <div style="background: white; padding: 15px; border-radius: 5px; text-align: center;">
-        <h4 style="color: #27ae60; margin: 0;">{{ $items->count() }}</h4>
-        <p style="margin: 5px 0 0 0;">Total Items</p>
-      </div>
-      <div style="background: white; padding: 15px; border-radius: 5px; text-align: center;">
-        <h4 style="color: #2980b9; margin: 0;">{{ $cars->count() }}</h4>
-        <p style="margin: 5px 0 0 0;">Total Cars</p>
-      </div>
-      <div style="background: white; padding: 15px; border-radius: 5px; text-align: center;">
-        <h4 style="color: #f39c12; margin: 0;">{{ $borrowedItems->count() }}</h4>
-        <p style="margin: 5px 0 0 0;">Borrowed Items</p>
-      </div>
-      <div style="background: white; padding: 15px; border-radius: 5px; text-align: center;">
-        <h4 style="color: #e74c3c; margin: 0;">{{ $borrowedCars->count() }}</h4>
-        <p style="margin: 5px 0 0 0;">Borrowed Cars</p>
-      </div>
+  <!-- Report Summary Boxes -->
+  <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; margin: 20px 0;">
+    <div style="flex: 1 1 200px; max-width: 150px; background: #27ae60; color: white; padding: 20px; border-radius: 10px; text-align: center; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+      <h3 style="margin: 0; font-size: 28px;">{{ $items->count() }}</h3>
+      <p style="margin: 5px 0 0 0; font-weight: bold;">Total Items</p>
     </div>
+    <div style="flex: 1 1 200px; max-width: 150px; background: #2980b9; color: white; padding: 20px; border-radius: 10px; text-align: center; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+      <h3 style="margin: 0; font-size: 28px;">{{ $cars->count() }}</h3>
+      <p style="margin: 5px 0 0 0; font-weight: bold;">Total Cars</p>
+    </div>
+    <div style="flex: 1 1 200px; max-width: 150px; background: #f39c12; color: white; padding: 20px; border-radius: 10px; text-align: center; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+      <h3 style="margin: 0; font-size: 28px;">{{ $borrowedItems->count() }}</h3>
+      <p style="margin: 5px 0 0 0; font-weight: bold;">Borrowed Items</p>
+    </div>
+    <div style="flex: 1 1 200px; max-width: 150px; background: #15c8ff; color: white; padding: 20px; border-radius: 10px; text-align: center; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+      <h3 style="margin: 0; font-size: 28px;">{{ $borrowedCars->count() }}</h3>
+      <p style="margin: 5px 0 0 0; font-weight: bold;">Borrowed Cars</p>
+    </div>
+  </div>
   </div>
 
   <!-- Report Actions -->
@@ -152,7 +150,7 @@
     </table>
   </div>
 </section>
-
+@endsection
 @section('scripts')
 function printReport(id) {
     const reportContent = document.getElementById(id);

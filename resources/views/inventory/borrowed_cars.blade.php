@@ -5,8 +5,7 @@ table { border-collapse: collapse; width:100%; margin-top:15px; }
 th, td { border:1px solid #ddd; padding:8px; text-align:center; }
 .search-input { padding:7px 12px; border:1px solid #ccc; border-radius:5px; font-size:15px; width:200px; }
 .btn { padding:5px 10px; border:none; border-radius:4px; cursor:pointer; font-size:14px; color:white; }
-.btn-extend { background-color:#f39c12; }
-.btn-return-confirm { background-color:#4CAF50; }
+.btn-return { background-color:#27ae60; }
 @endsection
 
 @section('content')
@@ -31,6 +30,17 @@ th, td { border:1px solid #ddd; padding:8px; text-align:center; }
   </table>
 </section>
 
+<!-- Return Car Modal -->
+<div id="returnCarModal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeReturnCarModal()">&times;</span>
+    <h3>Confirm Return</h3>
+    <p>Are you sure you want to mark this car as returned?</p>
+    <input type="hidden" id="returnCarId">
+    <button class="btn btn-return" onclick="confirmReturnCar()">Yes, Return</button>
+  </div>
+</div>
+
 @include('inventory.partials.modals')
 @endsection
 
@@ -44,7 +54,6 @@ async function fetchBorrowedCars(){
   data.forEach(bc => {
     const statusClass = bc.status === 'overdue' ? 'overdue' : bc.status === 'returned' ? 'returned' : 'active';
     
-    // Format dates
     const borrowDate = new Date(bc.borrow_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
     const dueDate = new Date(bc.due_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
 
@@ -56,27 +65,36 @@ async function fetchBorrowedCars(){
       <td>${dueDate}</td>
       <td class="${statusClass}">${bc.status}</td>
       <td>
-        <button class="btn btn-return" onclick="returnCar(${bc.id})" ${bc.status === 'returned' ? 'disabled' : ''}>Return</button>
+        <button class="btn btn-return" onclick="openReturnCarModal(${bc.id})" ${bc.status === 'returned' ? 'disabled' : ''}>Return</button>
       </td>`;
     tbody.appendChild(tr);
   });
 }
 
-async function returnCar(id) {
-  if (confirm('Mark this car as returned?')) {
-    const res = await fetch(`{{ url('inventory/api/borrowed-cars') }}/${id}/return`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-CSRF-TOKEN': '{{ csrf_token() }}'
-      }
-    });
-    if (res.ok) {
-      alert('Car returned successfully!');
-      fetchBorrowedCars();
-    } else {
-      alert('Error returning car');
+function openReturnCarModal(id){
+  document.getElementById('returnCarId').value = id;
+  document.getElementById('returnCarModal').style.display = 'flex';
+}
+
+function closeReturnCarModal(){
+  document.getElementById('returnCarModal').style.display = 'none';
+}
+
+async function confirmReturnCar(){
+  const id = document.getElementById('returnCarId').value;
+  const res = await fetch(`{{ url('inventory/api/borrowed-cars') }}/${id}/return`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-CSRF-TOKEN': '{{ csrf_token() }}'
     }
+  });
+  if (res.ok) {
+    alert('Car returned successfully!');
+    closeReturnCarModal();
+    fetchBorrowedCars();
+  } else {
+    alert('Error returning car');
   }
 }
 
@@ -89,6 +107,3 @@ document.getElementById('carSearch').addEventListener('input', function(){
 
 fetchBorrowedCars();
 @endsection
-
-
-

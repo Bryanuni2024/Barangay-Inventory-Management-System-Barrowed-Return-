@@ -12,28 +12,6 @@ th, td { border:1px solid #ddd; padding:8px; text-align:center; }
 @endsection
 
 @section('content')
-<section>
-  <h2>Item List</h2>
-  <div class="table-actions">
-    <button onclick="document.getElementById('addItemModal').classList.add('show'); document.body.classList.add('modal-open');" class="btn btn-borrow">Add Item</button>
-    <input type="text" id="itemSearch" class="search-input" placeholder="Search Items..." />
-  </div>
-  <table id="itemTable">
-    <thead>
-      <tr>
-        <th>Item ID</th>
-        <th>Name</th>
-        <th>Category</th>
-        <th>Quantity</th>
-        <th>Actions</th>
-      </tr>
-    </thead>
-    <tbody></tbody>
-  </table>
-</section>
-
-@endsection
-
 @section('modals')
 <div id="addItemModal" class="modal">
   <div class="modal-content">
@@ -107,6 +85,29 @@ th, td { border:1px solid #ddd; padding:8px; text-align:center; }
   </div>
 </div>
 @endsection
+<section>
+  <h2>Item List</h2>
+  <div class="table-actions">
+    <button onclick="document.getElementById('addItemModal').classList.add('show'); document.body.classList.add('modal-open');" class="btn btn-borrow">Add Item</button>
+    <input type="text" id="itemSearch" class="search-input" placeholder="Search Items..." />
+  </div>
+  <table id="itemTable">
+    <thead>
+      <tr>
+        <th>Item ID</th>
+        <th>Name</th>
+        <th>Category</th>
+        <th>Quantity</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+</section>
+
+@endsection
+
+
 
 @section('scripts')
 async function fetchItems(){

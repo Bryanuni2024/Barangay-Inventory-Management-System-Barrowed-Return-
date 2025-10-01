@@ -99,29 +99,52 @@ form button:hover {
   background:#27ae60; 
 }
 
-/* Modal */
-#modalContainer { 
-  position:fixed; 
-  top:0; 
-  left:0; 
-  right:0; 
-  bottom:0; 
-  background:rgba(0,0,0,0.6); 
-  display:none; 
-  justify-content:center; 
-  align-items:center; 
-  z-index:999; 
+/* =======================
+  Global Modal Styles
+   ======================= */
+.modal {
+  display: none; /* hidden by default */
+  position: fixed;
+  z-index: 1000;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.5);
+
+  /* Flexbox center */
+  justify-content: center;
+  align-items: center;
 }
 
-.modal { 
-  background:#fff; 
-  padding:30px; 
-  border-radius:10px; 
-  width:90%; 
-  max-width:400px; 
-  position:relative; 
-  animation:fadeIn 0.3s; 
+.modal.show {
+  display: flex; /* show and center */
 }
+
+.modal-content {
+  background: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  width: 400px;
+  max-width: 90%;
+  position: relative;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+.close {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  font-size: 24px;
+  font-weight: bold;
+  color: #aaa;
+  cursor: pointer;
+}
+
+.close:hover {
+  color: #000;
+}
+
 
 .close-btn { 
   position:absolute; 

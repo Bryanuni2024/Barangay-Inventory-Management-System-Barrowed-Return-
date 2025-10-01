@@ -1,6 +1,7 @@
 @extends('layouts.inventory')
 
 @section('styles')
+/* Table & buttons */
 table { border-collapse: collapse; width:100%; margin-top:15px; }
 th, td { border:1px solid #ddd; padding:8px; text-align:center; }
 .table-actions { display:flex; justify-content:space-between; align-items:center; margin-top:15px; margin-bottom:10px; }
@@ -9,13 +10,15 @@ th, td { border:1px solid #ddd; padding:8px; text-align:center; }
 .btn-delete { background-color:#e74c3c; }
 .btn-borrow { background-color:#2e86c1; }
 .btn-edit { background-color:#4CAF50; }
+
+/* Modal styling handled in style.css */
 @endsection
 
 @section('content')
 <section>
   <h2>Car List</h2>
   <div class="table-actions">
-    <button onclick="document.getElementById('addCarModal').classList.add('show'); document.body.classList.add('modal-open');" class="btn btn-borrow">Add Car</button>
+    <button onclick="openModal('addCarModal')" class="btn btn-borrow">Add Car</button>
     <input type="text" id="carSearch" class="search-input" placeholder="Search Cars..." />
   </div>
   <table id="carTable">
@@ -31,23 +34,24 @@ th, td { border:1px solid #ddd; padding:8px; text-align:center; }
     <tbody></tbody>
   </table>
 </section>
-
 @endsection
 
 @section('modals')
+<!-- Add Car Modal -->
 <div id="addCarModal" class="modal">
   <div class="modal-content">
-    <span class="close">&times;</span>
+    <span class="close" onclick="closeModal('addCarModal')">&times;</span>
     <h3>Add Car</h3>
     <form method="POST" action="{{ url('inventory/api/cars') }}">
       @csrf
-      <div style="margin-bottom: 15px;">
-        <label>Make & Model: <input type="text" name="make_model" required style="width: 100%; padding: 8px; margin-top: 5px;"></label>
-      </div>
-      <div style="margin-bottom: 15px;">
-        <label>Year: <input type="text" name="year" style="width: 100%; padding: 8px; margin-top: 5px;"></label>
-      </div>
-      <!-- Status field removed as per new requirements -->
+      <label>Make & Model:
+        <input type="text" name="make_model" required>
+      </label>
+      <label>Year:
+        <input type="text" name="year">
+      </label>
+      <!-- Hidden status input defaults to Available -->
+      <input type="hidden" name="status" value="Available">
       <button type="submit" class="btn btn-borrow">Add Car</button>
     </form>
   </div>
@@ -56,16 +60,22 @@ th, td { border:1px solid #ddd; padding:8px; text-align:center; }
 <!-- Edit Car Modal -->
 <div id="editCarModal" class="modal">
   <div class="modal-content">
-    <span class="close">&times;</span>
+    <span class="close" onclick="closeModal('editCarModal')">&times;</span>
     <h3>Edit Car</h3>
     <form id="editCarForm">
-      <input type="hidden" name="car_id" id="editCarId">
-      <div style="margin-bottom: 15px;">
-        <label>Make & Model: <input type="text" name="make_model" id="editMakeModel" required style="width: 100%; padding: 8px; margin-top: 5px;"></label>
-      </div>
-      <div style="margin-bottom: 15px;">
-        <label>Year: <input type="text" name="year" id="editYear" style="width: 100%; padding: 8px; margin-top: 5px;"></label>
-      </div>
+      <input type="hidden" id="editCarId">
+      <label>Make & Model:
+        <input type="text" id="editMakeModel" required>
+      </label>
+      <label>Year:
+        <input type="text" id="editYear">
+      </label>
+      <label>Status:
+        <select id="editStatus" required>
+          <option value="Available">Available</option>
+          <option value="Under Maintenance">Under Maintenance</option>
+        </select>
+      </label>
       <button type="submit" class="btn btn-edit">Save</button>
     </form>
   </div>
@@ -74,25 +84,15 @@ th, td { border:1px solid #ddd; padding:8px; text-align:center; }
 <!-- Borrow Car Modal -->
 <div id="borrowCarModal" class="modal">
   <div class="modal-content">
-    <span class="close">&times;</span>
+    <span class="close" onclick="closeModal('borrowCarModal')">&times;</span>
     <h3>Borrow Car</h3>
     <form id="borrowCarForm">
-      <div style="margin-bottom: 15px;">
-        <label>Car: <span id="borrowCarName" style="font-weight: bold;"></span></label>
-        <input type="hidden" id="borrowCarId" name="car_id">
-      </div>
-      <div style="margin-bottom: 15px;">
-        <label>Borrower Name: <input type="text" name="borrower_name" required style="width: 100%; padding: 8px; margin-top: 5px;"></label>
-      </div>
-      <div style="margin-bottom: 15px;">
-        <label>Borrow Date: <input type="date" name="borrow_date" required style="width: 100%; padding: 8px; margin-top: 5px;"></label>
-      </div>
-      <div style="margin-bottom: 15px;">
-        <label>Due Date: <input type="date" name="due_date" required style="width: 100%; padding: 8px; margin-top: 5px;"></label>
-      </div>
-      <div style="margin-bottom: 15px;">
-        <label>Notes: <textarea name="notes" style="width: 100%; padding: 8px; margin-top: 5px; height: 60px;"></textarea></label>
-      </div>
+      <input type="hidden" id="borrowCarId" name="car_id">
+      <label>Car: <span id="borrowCarName" style="font-weight:bold"></span></label>
+      <label>Borrower Name:<input type="text" name="borrower_name" required></label>
+      <label>Borrow Date:<input type="date" name="borrow_date" required></label>
+      <label>Due Date:<input type="date" name="due_date" required></label>
+      <label>Notes: <br><textarea name="notes"></textarea></label>
       <button type="submit" class="btn btn-borrow">Borrow Car</button>
     </form>
   </div>
@@ -100,114 +100,99 @@ th, td { border:1px solid #ddd; padding:8px; text-align:center; }
 @endsection
 
 @section('scripts')
+function openModal(id){
+  document.getElementById(id).classList.add('show');
+  document.body.classList.add('modal-open');
+}
+function closeModal(id){
+  document.getElementById(id).classList.remove('show');
+  document.body.classList.remove('modal-open');
+}
+
 async function fetchCars(){
-  const res = await fetch('{{ url('inventory/api/cars') }}');
+  const res = await fetch('{{ url("inventory/api/cars") }}');
   const data = await res.json();
   const tbody = document.querySelector('#carTable tbody');
   tbody.innerHTML = '';
   data.forEach(c => {
     const tr = document.createElement('tr');
-    tr.innerHTML = `<td>${c.code}</td><td>${c.make_model}</td><td>${c.year||''}</td><td>${c.status}</td>
+    tr.innerHTML = `<td>${c.code}</td>
+                    <td>${c.make_model}</td>
+                    <td>${c.year||''}</td>
+                    <td>${c.status}</td>
       <td style="display:flex; gap:6px; justify-content:center;">
-        <button type="button" class="btn btn-edit" data-id="${c.id}">Edit</button>
+        <button class="btn btn-edit" data-id="${c.id}">Edit</button>
         <form method="POST" action="{{ url('inventory/api/cars') }}/${c.id}" onsubmit="return confirm('Delete car?')">
           <input type="hidden" name="_method" value="DELETE">
           <input type="hidden" name="_token" value="{{ csrf_token() }}">
           <button class="btn btn-delete" type="submit">Delete</button>
         </form>
-        <button type="button" class="btn btn-borrow" data-id="${c.id}">Borrow</button>
+        <button class="btn btn-borrow" data-id="${c.id}">Borrow</button>
       </td>`;
     tbody.appendChild(tr);
 
-    const editBtn = tr.querySelector('.btn-edit');
-    editBtn.addEventListener('click', () => {
-      // Fill modal with car data
+    // Edit button
+    tr.querySelector('.btn-edit').addEventListener('click', () => {
       document.getElementById('editCarId').value = c.id;
       document.getElementById('editMakeModel').value = c.make_model;
       document.getElementById('editYear').value = c.year || '';
-      document.getElementById('editCarModal').classList.add('show');
-      document.body.classList.add('modal-open');
+      document.getElementById('editStatus').value = c.status;
+      openModal('editCarModal');
     });
 
-    const borrowBtn = tr.querySelector('.btn-borrow');
-    borrowBtn.addEventListener('click', () => {
-      const carId = borrowBtn.dataset.id;
-      document.getElementById('borrowCarId').value = carId;
+    // Borrow button
+    tr.querySelector('.btn-borrow').addEventListener('click', () => {
+      document.getElementById('borrowCarId').value = c.id;
       document.getElementById('borrowCarName').textContent = c.make_model;
       const today = new Date().toISOString().split('T')[0];
-      const nextWeek = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+      const nextWeek = new Date(Date.now() + 7*24*60*60*1000).toISOString().split('T')[0];
       document.querySelector('#borrowCarForm input[name="borrow_date"]').value = today;
       document.querySelector('#borrowCarForm input[name="due_date"]').value = nextWeek;
-      document.getElementById('borrowCarModal').classList.add('show');
-      document.body.classList.add('modal-open');
+      openModal('borrowCarModal');
     });
   });
 }
 
 document.getElementById('carSearch').addEventListener('input', function(){
-  const filter=this.value.toLowerCase();
-  document.querySelectorAll('#carTable tbody tr').forEach(row=>{
+  const filter = this.value.toLowerCase();
+  document.querySelectorAll('#carTable tbody tr').forEach(row => {
     row.style.display = row.textContent.toLowerCase().includes(filter)?'':'none';
   });
 });
 
-// Handle edit car form submission
-const editCarForm = document.getElementById('editCarForm');
-editCarForm.addEventListener('submit', async function(e) {
+// Edit Car Form
+document.getElementById('editCarForm').addEventListener('submit', async function(e){
   e.preventDefault();
   const carId = document.getElementById('editCarId').value;
   const makeModel = document.getElementById('editMakeModel').value;
   const year = document.getElementById('editYear').value;
+  const status = document.getElementById('editStatus').value;
   try {
-    const res = await fetch(`{{ url('inventory/api/cars') }}/${carId}`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-CSRF-TOKEN': '{{ csrf_token() }}',
-      },
-      body: JSON.stringify({
-        _method: 'PUT',
-        make_model: makeModel,
-        year: year
-      })
+    const res = await fetch(`{{ url("inventory/api/cars") }}/${carId}`, {
+      method:'POST',
+      headers:{'Content-Type':'application/json','X-CSRF-TOKEN':'{{ csrf_token() }}'},
+      body:JSON.stringify({_method:'PUT', make_model:makeModel, year, status})
     });
-    if (res.ok) {
+    if(res.ok){
       alert('Car updated successfully!');
-      document.getElementById('editCarModal').classList.remove('show');
-      document.body.classList.remove('modal-open');
+      closeModal('editCarModal');
       fetchCars();
     } else {
       const error = await res.json();
-      alert('Error: ' + (error.error || 'Failed to update car'));
+      alert('Error: '+(error.error||'Failed to update car'));
     }
-  } catch (error) {
-    alert('Error updating car: ' + error.message);
-  }
+  } catch(err){ alert('Error updating car: '+err.message); }
 });
 
-// Handle modal close buttons
-Array.from(document.querySelectorAll('.modal .close')).forEach(btn => {
-  btn.onclick = function() {
-    btn.closest('.modal').classList.remove('show');
-    document.body.classList.remove('modal-open');
-  };
-});
-
-// Handle borrow car form submission
-document.getElementById('borrowCarForm').addEventListener('submit', async function(e) {
+// Borrow Car Form
+document.getElementById('borrowCarForm').addEventListener('submit', async function(e){
   e.preventDefault();
-  
-  const formData = new FormData(this);
-  const data = Object.fromEntries(formData.entries());
-  
+  const data = Object.fromEntries(new FormData(this).entries());
   try {
-    const res = await fetch('{{ url('inventory/api/borrowed-cars') }}', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-CSRF-TOKEN': '{{ csrf_token() }}'
-      },
-      body: JSON.stringify({
+    const res = await fetch('{{ url("inventory/api/borrowed-cars") }}',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','X-CSRF-TOKEN':'{{ csrf_token() }}'},
+      body:JSON.stringify({
         car_id: parseInt(data.car_id),
         borrower_name: data.borrower_name,
         borrow_date: data.borrow_date,
@@ -215,23 +200,17 @@ document.getElementById('borrowCarForm').addEventListener('submit', async functi
         notes: data.notes
       })
     });
-    
-    if (res.ok) {
+    if(res.ok){
       alert('Car borrowed successfully!');
-      document.getElementById('borrowCarModal').classList.remove('show');
-      document.body.classList.remove('modal-open');
+      closeModal('borrowCarModal');
       this.reset();
-      fetchCars(); // Refresh the cars list
+      fetchCars();
     } else {
       const error = await res.json();
-      alert('Error: ' + (error.error || 'Failed to borrow car'));
+      alert('Error: '+(error.error||'Failed to borrow car'));
     }
-  } catch (error) {
-    alert('Error borrowing car: ' + error.message);
-  }
+  } catch(err){ alert('Error borrowing car: '+err.message); }
 });
 
 fetchCars();
 @endsection
-
-
