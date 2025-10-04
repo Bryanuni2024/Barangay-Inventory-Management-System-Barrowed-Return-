@@ -218,7 +218,7 @@ nav button:hover {
   <div style="display: flex; align-items: center; max-width: 1400px; margin: 0 auto; height: 56px;">
     <!-- Left: Logo -->
     <div style="flex: 0 0 auto; display: flex; align-items: center; height: 100%; padding-left: 18px; padding-right: 325px">
-      <img src='{{ asset('inventory/assets/logo1.png') }}' alt='Logo' style='height: 36px; border-radius: 6px; background: #fff; padding: 5px; border: 1.5px solid #27ae60; box-shadow: 0 1px 2px rgba(0,0,0,0.04);'>
+      <img src='{{ asset('inventory/assets/POBLACION.png') }}' alt='Logo' style='height: 36px; border-radius: 6px; background: #fff; padding: 5px; border: 1.5px solid #27ae60; box-shadow: 0 1px 2px rgba(0,0,0,0.04);'>
     </div>
     <!-- Center: System Name -->
     <div style="flex: 1 1 0%; display: flex; align-items: center; justify-content: center;">
