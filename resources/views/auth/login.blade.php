@@ -23,7 +23,7 @@
 
     .login-image {
       flex: 1;
-      background: url('{{ asset('inventory/assets/brgy1.jpg') }}') no-repeat center center;
+      background: url('{{ asset('inventory/assets/brgy.jpg') }}') no-repeat center center;
       background-size: cover;
     }
 

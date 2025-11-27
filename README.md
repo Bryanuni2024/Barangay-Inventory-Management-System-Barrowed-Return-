@@ -59,3 +59,21 @@ If you discover a security vulnerability within Laravel, please send an e-mail t
 ## License
 
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
+---
+
+## Quick hosting / local test helpers 🔧
+
+- There's a `render.yaml` already in this repository — Render.com can deploy this automatically. See `DEPLOY_TO_RENDER.md` for step-by-step instructions.
+- For quick local testing on Windows you can use `run-local.bat` (it will build containers, run migrations and start the app at http://localhost:10000).
+- A safe `.env.example` is included — copy it to `.env` and fill in credentials before deploying.
+
+### Auto-deploy from GitHub (optional)
+
+If you'd like automatic deploys from GitHub to Render I added a workflow at `.github/workflows/deploy-to-render.yml`. To enable it you'll need to add two GitHub repo secrets under Settings → Secrets & variables → Actions:
+
+- `RENDER_API_KEY` — create at https://dashboard.render.com/account/api-keys
+- `RENDER_SERVICE_ID` — copy from your Render service details
+
+Once the secrets are set, any push to `main` will trigger the workflow and request a new deploy from Render.
+

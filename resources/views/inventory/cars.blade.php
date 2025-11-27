@@ -50,9 +50,8 @@ th, td { border:1px solid #ddd; padding:8px; text-align:center; }
       <label>Year:
         <input type="text" name="year">
       </label>
-      <!-- Hidden status input defaults to Available -->
       <input type="hidden" name="status" value="Available">
-      <button type="submit" class="btn btn-borrow">Add Car</button>
+      <button type="submit" class="btn btn-borrow" style="margin-left: 40px">Add Car</button>
     </form>
   </div>
 </div>
@@ -64,19 +63,26 @@ th, td { border:1px solid #ddd; padding:8px; text-align:center; }
     <h3>Edit Car</h3>
     <form id="editCarForm">
       <input type="hidden" id="editCarId">
-      <label>Make & Model:
+      <label> <p style="margin-left: 35px">Make & Model:</p>
         <input type="text" id="editMakeModel" required>
       </label>
-      <label>Year:
+      <label> <p style="margin-left: 35px"> Year: </p>
+        <div>
         <input type="text" id="editYear">
+        </div>
       </label>
-      <label>Status:
-        <select id="editStatus" required>
+      <label><p style="margin-left: 35px">Status:</p>
+        <div style="margin-left: 35px">
+        <select id="editStatus" required style="padding: 8px">
           <option value="Available">Available</option>
           <option value="Under Maintenance">Under Maintenance</option>
         </select>
+        </div>
       </label>
-      <button type="submit" class="btn btn-edit">Save</button>
+      <p id="borrowedNotice" style="color:red; display:none; font-size:13px;">
+        ⚠ This car is currently borrowed. Status cannot be changed until it is returned.
+      </p>
+      <button type="submit" class="btn btn-edit" style="margin-left: 45px; margin-top: 60px;">Save</button>
     </form>
   </div>
 </div>
@@ -88,11 +94,21 @@ th, td { border:1px solid #ddd; padding:8px; text-align:center; }
     <h3>Borrow Car</h3>
     <form id="borrowCarForm">
       <input type="hidden" id="borrowCarId" name="car_id">
-      <label>Car: <span id="borrowCarName" style="font-weight:bold"></span></label>
-      <label>Borrower Name:<input type="text" name="borrower_name" required></label>
-      <label>Borrow Date:<input type="date" name="borrow_date" required></label>
-      <label>Due Date:<input type="date" name="due_date" required></label>
-      <label>Notes: <br><textarea name="notes"></textarea></label>
+      <div style="margin-bottom: 15px;">
+      <label style="margin-left: 25px">Car: <span id="borrowCarName" style="font-weight: bold; color: rgb(255, 99, 71);" ></span></label>
+      </div>
+      <div style="margin-bottom: 15px;">
+      <label style="margin-left: 25px">Borrower Name:<input type="text" name="borrower_name" required style="width: 100%; padding: 8px; margin-top: 5px;"></label>
+      </div>
+      <div style="margin-bottom: 15px;">
+      <label style="margin-left: 25px">Borrow Date:<input type="date" name="borrow_date" required style="width: 100%; padding: 8px; margin-top: 5px;"></label>
+      </div>
+      <div style="margin-bottom: 15px;">
+      <label style="margin-left: 25px">Due Date:<input type="date" name="due_date" required style="width: 100%; padding: 8px; margin-top: 5px;"></label>
+      </div>
+      <div style="margin-bottom: 15px;">
+      <label style="margin-left: 25px">Notes: <br><textarea name="notes" style="width: 96%; padding: 8px; margin-top: 5px; height: 60px;"></textarea></label>
+      </div>
       <button type="submit" class="btn btn-borrow">Borrow Car</button>
     </form>
   </div>
@@ -114,6 +130,9 @@ async function fetchCars(){
   const data = await res.json();
   const tbody = document.querySelector('#carTable tbody');
   tbody.innerHTML = '';
+
+  data.sort((a, b) => a.id - b.id);
+
   data.forEach(c => {
     const tr = document.createElement('tr');
     tr.innerHTML = `<td>${c.code}</td>
@@ -137,11 +156,27 @@ async function fetchCars(){
       document.getElementById('editMakeModel').value = c.make_model;
       document.getElementById('editYear').value = c.year || '';
       document.getElementById('editStatus').value = c.status;
+
+      const statusField = document.getElementById('editStatus');
+      const notice = document.getElementById('borrowedNotice');
+
+      if (c.status === 'Borrowed') {
+        statusField.disabled = true;
+        notice.style.display = 'block';
+      } else {
+        statusField.disabled = false;
+        notice.style.display = 'none';
+      }
+
       openModal('editCarModal');
     });
 
     // Borrow button
     tr.querySelector('.btn-borrow').addEventListener('click', () => {
+      if (c.status === 'Borrowed') {
+        alert('This car is already borrowed!');
+        return;
+      }
       document.getElementById('borrowCarId').value = c.id;
       document.getElementById('borrowCarName').textContent = c.make_model;
       const today = new Date().toISOString().split('T')[0];
@@ -153,20 +188,32 @@ async function fetchCars(){
   });
 }
 
-document.getElementById('carSearch').addEventListener('input', function(){
-  const filter = this.value.toLowerCase();
-  document.querySelectorAll('#carTable tbody tr').forEach(row => {
-    row.style.display = row.textContent.toLowerCase().includes(filter)?'':'none';
-  });
-});
-
 // Edit Car Form
 document.getElementById('editCarForm').addEventListener('submit', async function(e){
   e.preventDefault();
   const carId = document.getElementById('editCarId').value;
   const makeModel = document.getElementById('editMakeModel').value;
   const year = document.getElementById('editYear').value;
-  const status = document.getElementById('editStatus').value;
+  const statusField = document.getElementById('editStatus');
+
+  // If borrowed, block update of status
+  if (statusField.disabled) {
+    try {
+      const res = await fetch(`{{ url("inventory/api/cars") }}/${carId}`, {
+        method:'POST',
+        headers:{'Content-Type':'application/json','X-CSRF-TOKEN':'{{ csrf_token() }}'},
+        body:JSON.stringify({_method:'PUT', make_model:makeModel, year})
+      });
+      if(res.ok){
+        alert('Car details updated (status unchanged).');
+        closeModal('editCarModal');
+        fetchCars();
+      }
+    } catch(err){ alert('Error updating car: '+err.message); }
+    return;
+  }
+
+  const status = statusField.value;
   try {
     const res = await fetch(`{{ url("inventory/api/cars") }}/${carId}`, {
       method:'POST',
@@ -210,6 +257,13 @@ document.getElementById('borrowCarForm').addEventListener('submit', async functi
       alert('Error: '+(error.error||'Failed to borrow car'));
     }
   } catch(err){ alert('Error borrowing car: '+err.message); }
+});
+
+document.getElementById('carSearch').addEventListener('input', function(){
+  const filter = this.value.toLowerCase();
+  document.querySelectorAll('#carTable tbody tr').forEach(row => {
+    row.style.display = row.textContent.toLowerCase().includes(filter)?'':'none';
+  });
 });
 
 fetchCars();

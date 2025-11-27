@@ -1,149 +1,137 @@
 @extends('layouts.inventory')
 
-
-
 @section('content')
 <section>
   <h2 style="text-align: center; color: #2c3e50;">Reports</h2>
   
   <!-- Report Summary Boxes -->
   <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; margin: 20px 0;">
-    <div style="flex: 1 1 200px; max-width: 150px; background: #27ae60; color: white; padding: 20px; border-radius: 10px; text-align: center; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+    <div style="flex: 1 1 200px; max-width: 150px; background: #27ae60; color: white; padding: 20px; border-radius: 10px; text-align: center;">
       <h3 style="margin: 0; font-size: 28px;">{{ $items->count() }}</h3>
       <p style="margin: 5px 0 0 0; font-weight: bold;">Total Items</p>
     </div>
-    <div style="flex: 1 1 200px; max-width: 150px; background: #2980b9; color: white; padding: 20px; border-radius: 10px; text-align: center; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+    <div style="flex: 1 1 200px; max-width: 150px; background: #2980b9; color: white; padding: 20px; border-radius: 10px; text-align: center;">
       <h3 style="margin: 0; font-size: 28px;">{{ $cars->count() }}</h3>
       <p style="margin: 5px 0 0 0; font-weight: bold;">Total Cars</p>
     </div>
-    <div style="flex: 1 1 200px; max-width: 150px; background: #f39c12; color: white; padding: 20px; border-radius: 10px; text-align: center; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+    <div style="flex: 1 1 200px; max-width: 150px; background: #f39c12; color: white; padding: 20px; border-radius: 10px; text-align: center;">
       <h3 style="margin: 0; font-size: 28px;">{{ $borrowedItems->count() }}</h3>
       <p style="margin: 5px 0 0 0; font-weight: bold;">Borrowed Items</p>
     </div>
-    <div style="flex: 1 1 200px; max-width: 150px; background: #15c8ff; color: white; padding: 20px; border-radius: 10px; text-align: center; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+    <div style="flex: 1 1 200px; max-width: 150px; background: #15c8ff; color: white; padding: 20px; border-radius: 10px; text-align: center;">
       <h3 style="margin: 0; font-size: 28px;">{{ $borrowedCars->count() }}</h3>
       <p style="margin: 5px 0 0 0; font-weight: bold;">Borrowed Cars</p>
     </div>
-  </div>
   </div>
 
   <!-- Report Actions -->
   <div class="report-actions" style="margin-top: 20px; display: flex; flex-direction: column; gap: 20px; align-items: center;">
     <div style="display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;">
-      <button onclick="printReport('itemList')" style="padding: 12px 24px; background-color: #27ae60; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 14px;">🖨️ Print Item List Report</button>
-      <button onclick="exportCSV('itemList', 'item_list_report.csv')" style="padding: 12px 24px; background-color: #2980b9; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 14px;">💾 Save Item List Report</button>
+      <button onclick="printReport('itemList')" style="padding: 12px 24px; background-color: #27ae60; color: white; border: none; border-radius: 5px;">🖨️ Print Item List</button>
+      <button onclick="exportPDF('itemList', 'item_list_report.pdf')" style="padding: 12px 24px; background-color: #2980b9; color: white; border: none; border-radius: 5px;">💾 Save Item List</button>
     </div>
     <div style="display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;">
-      <button onclick="printReport('carList')" style="padding: 12px 24px; background-color: #27ae60; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 14px;">🖨️ Print Car List Report</button>
-      <button onclick="exportCSV('carList', 'car_list_report.csv')" style="padding: 12px 24px; background-color: #2980b9; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 14px;">💾 Save Car List Report</button>
+      <button onclick="printReport('carList')" style="padding: 12px 24px; background-color: #27ae60; color: white; border: none; border-radius: 5px;">🖨️ Print Car List</button>
+      <button onclick="exportPDF('carList', 'car_list_report.pdf')" style="padding: 12px 24px; background-color: #2980b9; color: white; border: none; border-radius: 5px;">💾 Save Car List</button>
     </div>
     <div style="display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;">
-      <button onclick="printReport('borrowedItemList')" style="padding: 12px 24px; background-color: #27ae60; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 14px;">🖨️ Print Borrowed Items Report</button>
-      <button onclick="exportCSV('borrowedItemList', 'borrowed_items_report.csv')" style="padding: 12px 24px; background-color: #2980b9; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 14px;">💾 Save Borrowed Items Report</button>
+      <button onclick="printReport('borrowedItemList')" style="padding: 12px 24px; background-color: #27ae60; color: white; border: none; border-radius: 5px;">🖨️ Print Borrowed Items</button>
+      <button onclick="exportPDF('borrowedItemList', 'borrowed_items_report.pdf')" style="padding: 12px 24px; background-color: #2980b9; color: white; border: none; border-radius: 5px;">💾 Save Borrowed Items</button>
     </div>
     <div style="display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;">
-      <button onclick="printReport('borrowedCarList')" style="padding: 12px 24px; background-color: #27ae60; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 14px;">🖨️ Print Borrowed Cars Report</button>
-      <button onclick="exportCSV('borrowedCarList', 'borrowed_cars_report.csv')" style="padding: 12px 24px; background-color: #2980b9; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 14px;">💾 Save Borrowed Cars Report</button>
+      <button onclick="printReport('borrowedCarList')" style="padding: 12px 24px; background-color: #27ae60; color: white; border: none; border-radius: 5px;">🖨️ Print Borrowed Cars</button>
+      <button onclick="exportPDF('borrowedCarList', 'borrowed_cars_report.pdf')" style="padding: 12px 24px; background-color: #2980b9; color: white; border: none; border-radius: 5px;">💾 Save Borrowed Cars</button>
+    </div>
+
+    <!-- NEW BUTTONS -->
+    <div style="display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin-top: 20px;">
+      <button onclick="printAllReports()" style="padding: 12px 24px; background-color: #e67e22; color: white; border: none; border-radius: 5px;">🖨️ Print All Reports</button>
+      <button onclick="exportAllPDF('all_reports.pdf')" style="padding: 12px 24px; background-color: #9b59b6; color: white; border: none; border-radius: 5px;">💾 Download All Reports</button>
     </div>
   </div>
 
-  <!-- Hidden Report Data -->
-  <div id="itemList" style="display: none;">
+  <!-- Hidden Reports -->
+  <div id="itemList" style="display:none;">
     <h3>Item List Report</h3>
-    <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
+    <table style="width:100%; border-collapse:collapse;">
       <thead>
-        <tr style="background: #27ae60; color: white;">
-          <th style="border: 1px solid #ddd; padding: 8px;">Code</th>
-          <th style="border: 1px solid #ddd; padding: 8px;">Name</th>
-          <th style="border: 1px solid #ddd; padding: 8px;">Category</th>
-          <th style="border: 1px solid #ddd; padding: 8px;">Quantity</th>
+        <tr style="background:#27ae60; color:white;">
+          <th>Code</th><th>Name</th><th>Category</th><th>Quantity</th>
         </tr>
       </thead>
       <tbody>
         @foreach($items as $item)
         <tr>
-          <td style="border: 1px solid #ddd; padding: 8px;">{{ $item->code }}</td>
-          <td style="border: 1px solid #ddd; padding: 8px;">{{ $item->name }}</td>
-          <td style="border: 1px solid #ddd; padding: 8px;">{{ $item->category }}</td>
-          <td style="border: 1px solid #ddd; padding: 8px;">{{ $item->quantity }}</td>
+          <td>{{ $item->code }}</td>
+          <td>{{ $item->name }}</td>
+          <td>{{ $item->category }}</td>
+          <td>{{ $item->quantity }}</td>
         </tr>
         @endforeach
       </tbody>
     </table>
   </div>
 
-  <div id="carList" style="display: none;">
+  <div id="carList" style="display:none;">
     <h3>Car List Report</h3>
-    <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
+    <table style="width:100%; border-collapse:collapse;">
       <thead>
-        <tr style="background: #2980b9; color: white;">
-          <th style="border: 1px solid #ddd; padding: 8px;">Code</th>
-          <th style="border: 1px solid #ddd; padding: 8px;">Make/Model</th>
-          <th style="border: 1px solid #ddd; padding: 8px;">Year</th>
-          <th style="border: 1px solid #ddd; padding: 8px;">Status</th>
+        <tr style="background:#2980b9; color:white;">
+          <th>Code</th><th>Make/Model</th><th>Year</th><th>Status</th>
         </tr>
       </thead>
       <tbody>
         @foreach($cars as $car)
         <tr>
-          <td style="border: 1px solid #ddd; padding: 8px;">{{ $car->code }}</td>
-          <td style="border: 1px solid #ddd; padding: 8px;">{{ $car->make_model }}</td>
-          <td style="border: 1px solid #ddd; padding: 8px;">{{ $car->year }}</td>
-          <td style="border: 1px solid #ddd; padding: 8px;">{{ $car->status }}</td>
+          <td>{{ $car->code }}</td>
+          <td>{{ $car->make_model }}</td>
+          <td>{{ $car->year }}</td>
+          <td>{{ $car->status }}</td>
         </tr>
         @endforeach
       </tbody>
     </table>
   </div>
 
-  <div id="borrowedItemList" style="display: none;">
+  <div id="borrowedItemList" style="display:none;">
     <h3>Borrowed Items Report</h3>
-    <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
+    <table style="width:100%; border-collapse:collapse;">
       <thead>
-        <tr style="background: #f39c12; color: white;">
-          <th style="border: 1px solid #ddd; padding: 8px;">Item</th>
-          <th style="border: 1px solid #ddd; padding: 8px;">Borrower</th>
-          <th style="border: 1px solid #ddd; padding: 8px;">Quantity</th>
-          <th style="border: 1px solid #ddd; padding: 8px;">Borrow Date</th>
-          <th style="border: 1px solid #ddd; padding: 8px;">Due Date</th>
-          <th style="border: 1px solid #ddd; padding: 8px;">Status</th>
+        <tr style="background:#f39c12; color:white;">
+          <th>Item</th><th>Borrower</th><th>Quantity</th><th>Borrow Date</th><th>Due Date</th><th>Status</th>
         </tr>
       </thead>
       <tbody>
-        @foreach($borrowedItems as $borrowed)
+        @foreach($borrowedItems as $b)
         <tr>
-          <td style="border: 1px solid #ddd; padding: 8px;">{{ $borrowed->item->name ?? 'N/A' }}</td>
-          <td style="border: 1px solid #ddd; padding: 8px;">{{ $borrowed->borrower_name }}</td>
-          <td style="border: 1px solid #ddd; padding: 8px;">{{ $borrowed->quantity_borrowed }}</td>
-          <td style="border: 1px solid #ddd; padding: 8px;">{{ \Carbon\Carbon::parse($borrowed->borrow_date)->format('M d, Y') }}</td>
-          <td style="border: 1px solid #ddd; padding: 8px;">{{ \Carbon\Carbon::parse($borrowed->due_date)->format('M d, Y') }}</td>
-          <td style="border: 1px solid #ddd; padding: 8px;">{{ ucfirst($borrowed->status) }}</td>
+          <td>{{ $b->item->name ?? 'N/A' }}</td>
+          <td>{{ $b->borrower_name }}</td>
+          <td>{{ $b->quantity_borrowed }}</td>
+          <td>{{ \Carbon\Carbon::parse($b->borrow_date)->format('M d, Y') }}</td>
+          <td>{{ \Carbon\Carbon::parse($b->due_date)->format('M d, Y') }}</td>
+          <td>{{ ucfirst($b->status) }}</td>
         </tr>
         @endforeach
       </tbody>
     </table>
   </div>
 
-  <div id="borrowedCarList" style="display: none;">
+  <div id="borrowedCarList" style="display:none;">
     <h3>Borrowed Cars Report</h3>
-    <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
+    <table style="width:100%; border-collapse:collapse;">
       <thead>
-        <tr style="background: #e74c3c; color: white;">
-          <th style="border: 1px solid #ddd; padding: 8px;">Vehicle</th>
-          <th style="border: 1px solid #ddd; padding: 8px;">Borrower</th>
-          <th style="border: 1px solid #ddd; padding: 8px;">Borrow Date</th>
-          <th style="border: 1px solid #ddd; padding: 8px;">Due Date</th>
-          <th style="border: 1px solid #ddd; padding: 8px;">Status</th>
+        <tr style="background:#e74c3c; color:white;">
+          <th>Vehicle</th><th>Borrower</th><th>Borrow Date</th><th>Due Date</th><th>Status</th>
         </tr>
       </thead>
       <tbody>
-        @foreach($borrowedCars as $borrowed)
+        @foreach($borrowedCars as $b)
         <tr>
-          <td style="border: 1px solid #ddd; padding: 8px;">{{ $borrowed->car->make_model ?? 'N/A' }}</td>
-          <td style="border: 1px solid #ddd; padding: 8px;">{{ $borrowed->borrower_name }}</td>
-          <td style="border: 1px solid #ddd; padding: 8px;">{{ \Carbon\Carbon::parse($borrowed->borrow_date)->format('M d, Y') }}</td>
-          <td style="border: 1px solid #ddd; padding: 8px;">{{ \Carbon\Carbon::parse($borrowed->due_date)->format('M d, Y') }}</td>
-          <td style="border: 1px solid #ddd; padding: 8px;">{{ ucfirst($borrowed->status) }}</td>
+          <td>{{ $b->car->make_model ?? 'N/A' }}</td>
+          <td>{{ $b->borrower_name }}</td>
+          <td>{{ \Carbon\Carbon::parse($b->borrow_date)->format('M d, Y') }}</td>
+          <td>{{ \Carbon\Carbon::parse($b->due_date)->format('M d, Y') }}</td>
+          <td>{{ ucfirst($b->status) }}</td>
         </tr>
         @endforeach
       </tbody>
@@ -151,61 +139,95 @@
   </div>
 </section>
 @endsection
+
 @section('scripts')
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+<script>
+// Print single
 function printReport(id) {
-    const reportContent = document.getElementById(id);
-    if (reportContent) {
-        const printWindow = window.open('', '_blank');
-        printWindow.document.write(`
-            <html>
-                <head>
-                    <title>${id} Report</title>
-                    <style>
-                        body { font-family: Arial, sans-serif; margin: 20px; }
-                        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-                        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-                        th { background-color: #f2f2f2; }
-                        h1, h3 { color: #333; }
-                        @media print { body { margin: 0; } }
-                    </style>
-                </head>
-                <body>
-                    <h1>Barangay Inventory System</h1>
-                    <h3>Report Generated: ${new Date().toLocaleDateString()}</h3>
-                    ${reportContent.innerHTML}
-                </body>
-            </html>
-        `);
-        printWindow.document.close();
-        printWindow.print();
-    }
+  const content = document.getElementById(id);
+  if (!content) return;
+  const win = window.open('', '_blank');
+  win.document.write(`
+    <html><head><title>${id}</title></head><body>
+    <h1>Barangay Inventory System</h1>
+    <h3>Report Generated: ${new Date().toLocaleDateString()}</h3>
+    ${content.innerHTML}
+    </body></html>
+  `);
+  win.document.close();
+  win.print();
 }
 
-function exportCSV(id, filename) {
-    const reportContent = document.getElementById(id);
-    if (reportContent) {
-        const table = reportContent.querySelector('table');
-        if (table) {
-            let csv = [];
-            const rows = table.querySelectorAll('tr');
-            
-            rows.forEach(row => {
-                const cols = row.querySelectorAll('th, td');
-                const rowData = Array.from(cols).map(col => `"${col.textContent.trim()}"`);
-                csv.push(rowData.join(','));
-            });
-            
-            const csvContent = csv.join('\n');
-            const blob = new Blob([csvContent], { type: 'text/csv' });
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = filename;
-            a.click();
-            window.URL.revokeObjectURL(url);
-        }
-    }
+// Save single with rename
+async function exportPDF(id, defaultFilename) {
+  const { jsPDF } = window.jspdf;
+  const content = document.getElementById(id);
+  if (!content) return;
+
+  let filename = prompt("Enter file name:", defaultFilename);
+  if (!filename) return;
+  if (!filename.endsWith(".pdf")) filename += ".pdf";
+
+  const clone = content.cloneNode(true);
+  clone.style.display = "block";
+  document.body.appendChild(clone);
+
+  const canvas = await html2canvas(clone, { scale: 2 });
+  const imgData = canvas.toDataURL("image/png");
+  const pdf = new jsPDF("p", "mm", "a4");
+  const width = pdf.internal.pageSize.getWidth();
+  const height = (canvas.height * width) / canvas.width;
+  pdf.addImage(imgData, "PNG", 0, 0, width, height);
+  pdf.save(filename);
+  document.body.removeChild(clone);
 }
+
+// Print all
+function printAllReports() {
+  const ids = ["itemList", "carList", "borrowedItemList", "borrowedCarList"];
+  const win = window.open('', '_blank');
+  win.document.write(`<html><head><title>All Reports</title></head><body><h1>Barangay Inventory System</h1>`);
+  ids.forEach(id => {
+    const content = document.getElementById(id);
+    if (content) win.document.write(`<h2>${content.querySelector('h3').textContent}</h2>${content.querySelector('table').outerHTML}<br><br>`);
+  });
+  win.document.write(`</body></html>`);
+  win.document.close();
+  win.print();
+}
+
+// Download all
+async function exportAllPDF(defaultFilename) {
+  const { jsPDF } = window.jspdf;
+  const ids = ["itemList", "carList", "borrowedItemList", "borrowedCarList"];
+  const pdf = new jsPDF("p", "mm", "a4");
+  let yOffset = 10;
+
+  for (let i = 0; i < ids.length; i++) {
+    const content = document.getElementById(ids[i]);
+    if (!content) continue;
+
+    const clone = content.cloneNode(true);
+    clone.style.display = "block";
+    document.body.appendChild(clone);
+
+    const canvas = await html2canvas(clone, { scale: 2 });
+    const imgData = canvas.toDataURL("image/png");
+    const width = pdf.internal.pageSize.getWidth();
+    const height = (canvas.height * width) / canvas.width;
+
+    if (i > 0) pdf.addPage();
+    pdf.addImage(imgData, "PNG", 0, 0, width, height);
+    document.body.removeChild(clone);
+  }
+
+  let filename = prompt("Enter file name for all reports:", defaultFilename);
+  if (!filename) return;
+  if (!filename.endsWith(".pdf")) filename += ".pdf";
+  pdf.save(filename);
+}
+</script>
 @endsection
-
-

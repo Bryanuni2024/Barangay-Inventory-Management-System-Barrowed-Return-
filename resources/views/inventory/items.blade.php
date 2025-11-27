@@ -20,15 +20,15 @@ th, td { border:1px solid #ddd; padding:8px; text-align:center; }
     <form method="POST" action="{{ url('inventory/api/items') }}">
       @csrf
       <div style="margin-bottom: 15px;">
-        <label>Item Name: <input type="text" name="name" required style="width: 100%; padding: 8px; margin-top: 5px;"></label>
+        <label style="margin-left: 25px">Item Name: <input type="text" name="name" required style="width: 100%; padding: 8px; margin-top: 5px;"></label>
       </div>
       <div style="margin-bottom: 15px;">
-        <label>Category: <input type="text" name="category" style="width: 100%; padding: 8px; margin-top: 5px;"></label>
+        <label style="margin-left: 25px">Category: <input type="text" name="category" style="width: 100%; padding: 8px; margin-top: 5px;"></label>
       </div>
       <div style="margin-bottom: 15px;">
-        <label>Quantity: <input type="number" name="quantity" min="0" required style="width: 100%; padding: 8px; margin-top: 5px;"></label>
+        <label style="margin-left: 25px">Quantity: <input type="number" name="quantity" min="0" required style="width: 100%; padding: 8px; margin-top: 5px;"></label>
       </div>
-      <button type="submit" class="btn btn-borrow">Add Item</button>
+      <button type="submit" class="btn btn-borrow" style="margin-left: 35px">Add Item</button>
     </form>
   </div>
 </div>
@@ -41,15 +41,15 @@ th, td { border:1px solid #ddd; padding:8px; text-align:center; }
     <form id="editItemForm">
       <input type="hidden" name="item_id" id="editItemId">
       <div style="margin-bottom: 15px;">
-        <label>Item Name: <input type="text" name="name" id="editItemName" required style="width: 100%; padding: 8px; margin-top: 5px;"></label>
+        <label style="margin-left: 25px">Item Name: <input type="text" name="name" id="editItemName" required style="width: 100%; padding: 8px; margin-top: 5px;"></label>
       </div>
       <div style="margin-bottom: 15px;">
-        <label>Category: <input type="text" name="category" id="editItemCategory" style="width: 100%; padding: 8px; margin-top: 5px;"></label>
+        <label style="margin-left: 25px">Category: <input type="text" name="category" id="editItemCategory" style="width: 100%; padding: 8px; margin-top: 5px;"></label>
       </div>
       <div style="margin-bottom: 15px;">
-        <label>Quantity: <input type="number" name="quantity" id="editItemQuantity" min="0" required style="width: 100%; padding: 8px; margin-top: 5px;"></label>
+        <label style="margin-left: 25px">Quantity: <input type="number" name="quantity" id="editItemQuantity" min="0" required style="width: 100%; padding: 8px; margin-top: 5px;"></label>
       </div>
-      <button type="submit" class="btn btn-edit">Save</button>
+      <button type="submit" class="btn btn-edit" style="margin-left: 45px">Save</button>
     </form>
   </div>
 </div>
@@ -61,30 +61,31 @@ th, td { border:1px solid #ddd; padding:8px; text-align:center; }
     <h3>Borrow Item</h3>
     <form id="borrowItemForm">
       <div style="margin-bottom: 15px;">
-        <label>Item: <span id="borrowItemName" style="font-weight: bold;"></span></label>
+        <label style="margin-left: 25px">Item: <span id="borrowItemName" style="font-weight: bold; color: rgb(255, 99, 71);"></span></label>
         <input type="hidden" id="borrowItemId" name="item_id">
       </div>
       <div style="margin-bottom: 15px;">
-        <label>Borrower Name: <input type="text" name="borrower_name" required style="width: 100%; padding: 8px; margin-top: 5px;"></label>
+        <label style="margin-left: 25px">Borrower Name: <input type="text" name="borrower_name" required style="width: 100%; padding: 8px; margin-top: 5px;"></label>
       </div>
       <div style="margin-bottom: 15px;">
-        <label>Quantity to Borrow: <input type="number" id="borrowQuantity" name="quantity_borrowed" min="1" required style="width: 100%; padding: 8px; margin-top: 5px;"></label>
-        <small style="color: #666;">Available: <span id="availableQuantity"></span></small>
+        <label style="margin-left: 25px">Quantity to Borrow: <input type="number" id="borrowQuantity" name="quantity_borrowed" min="1" required style="width: 100%; padding: 8px; margin-top: 5px;"></label>
+        <small style="color: #161212; margin-left: 25px" >Available: <span id="availableQuantity" style="font-weight: bold; color: rgb(255, 99, 71);"></span></small>
       </div>
       <div style="margin-bottom: 15px;">
-        <label>Borrow Date: <input type="date" name="borrow_date" required style="width: 100%; padding: 8px; margin-top: 5px;"></label>
+        <label style="margin-left: 25px">Borrow Date: <input type="date" name="borrow_date" required style="width: 100%; padding: 8px; margin-top: 5px;"></label>
       </div>
       <div style="margin-bottom: 15px;">
-        <label>Due Date: <input type="date" name="due_date" required style="width: 100%; padding: 8px; margin-top: 5px;"></label>
+        <label style="margin-left: 25px">Due Date: <input type="date" name="due_date" required style="width: 100%; padding: 8px; margin-top: 5px;"></label>
       </div>
       <div style="margin-bottom: 15px;">
-        <label>Notes: <textarea name="notes" style="width: 100%; padding: 8px; margin-top: 5px; height: 60px;"></textarea></label>
+        <label style="margin-left: 25px">Notes: <textarea name="notes" style="width: 96%; padding: 8px; margin-top: 5px; height: 60px;"></textarea></label>
       </div>
-      <button type="submit" class="btn btn-borrow">Borrow Item</button>
+      <button type="submit" class="btn btn-borrow" style="margin-left: 40px">Borrow Item</button>
     </form>
   </div>
 </div>
 @endsection
+
 <section>
   <h2>Item List</h2>
   <div class="table-actions">
@@ -107,14 +108,18 @@ th, td { border:1px solid #ddd; padding:8px; text-align:center; }
 
 @endsection
 
-
-
 @section('scripts')
 async function fetchItems(){
   const res = await fetch('{{ url('inventory/api/items') }}');
   const data = await res.json();
   const tbody = document.querySelector('#itemTable tbody');
   tbody.innerHTML = '';
+
+  // ✅ Sort ascending by ID
+  data.sort((a, b) => a.id - b.id);
+
+  
+
   data.forEach(it => {
     const tr = document.createElement('tr');
     tr.innerHTML = `<td>${it.code}</td><td>${it.name}</td><td>${it.category||''}</td><td>${it.quantity}</td>
@@ -205,6 +210,21 @@ document.getElementById('itemSearch').addEventListener('input', function(){
     row.style.display = row.textContent.toLowerCase().includes(filter)?'':'none';
   });
 });
+/*
+document.getElementById('itemSearch').addEventListener('input', function() {
+  const filter = this.value.toLowerCase();
+  document.querySelectorAll('#itemTable tbody tr').forEach(row => {
+    const cells = row.querySelectorAll('td');
+    const name = cells[1]?.textContent.toLowerCase() || '';      // Name column
+    const category = cells[2]?.textContent.toLowerCase() || '';  // Category column
+
+    // Only match against Name and Category
+    const match = name.includes(filter) || category.includes(filter);
+    row.style.display = match ? '' : 'none';
+  });
+});
+*/
+
 
 // Handle borrow form submission
 document.getElementById('borrowItemForm').addEventListener('submit', async function(e) {
@@ -247,5 +267,3 @@ document.getElementById('borrowItemForm').addEventListener('submit', async funct
 
 fetchItems();
 @endsection
-
-

@@ -16,3 +16,20 @@ services:
         value: false
       - key: APP_URL
         value: https://barangay-inventory-system.onrender.com
+      - key: DB_CONNECTION
+        value: pgsql
+      - key: DB_HOST
+        value: dpg-d3gdnsogjchc739m3mkg-a
+      - key: DB_PORT
+        value: 5432
+      - key: DB_DATABASE
+        value: barangay_inventory_management_system
+      - key: DB_USERNAME
+        value: barangay_inventory_management_system_user
+      - key: DB_PASSWORD
+        value: HBUk8v7YkXJpgY2grUQ0uKrkz3dgR70u
+databases:
+  - name: barangay-inventory-management-system
+    databaseName: barangay_inventory_management_system
+    user: barangay_inventory_management_system_user
+    plan: free

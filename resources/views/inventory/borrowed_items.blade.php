@@ -1,5 +1,4 @@
 @extends('layouts.inventory')
-<meta name="csrf-token" content="{{ csrf_token() }}">
 
 @section('styles')
 table { border-collapse: collapse; width:100%; margin-top:15px; }
@@ -8,6 +7,7 @@ th, td { border:1px solid #ddd; padding:8px; text-align:center; }
 .btn { padding:5px 10px; border:none; border-radius:4px; cursor:pointer; font-size:14px; color:white; margin: 2px; }
 .btn-extend { background-color:#f39c12; }
 .btn-return { background-color:#27ae60; }
+.btn-view { background-color:#8e44ad; } /* ✅ NEW */
 @endsection
 
 @section('content')
@@ -27,9 +27,7 @@ th, td { border:1px solid #ddd; padding:8px; text-align:center; }
         <th>Actions</th>
       </tr>
     </thead>
-    <tbody>
-      <!-- Data will be loaded dynamically from database -->
-    </tbody>
+    <tbody></tbody>
   </table>
 </section>
 
@@ -49,8 +47,52 @@ th, td { border:1px solid #ddd; padding:8px; text-align:center; }
       <label>New Due Date:</label>
       <input type="text" id="newDueDate" readonly class="form-control"><br>
       
-      <button type="button" class="btn btn-extend" onclick="extendItem(document.getElementById('extendItemId').value)">Confirm Extend</button>
+      <button style="margin-left: 45px" type="button" class="btn btn-extend" onclick="extendItem(document.getElementById('extendItemId').value)">Confirm Extend</button>
     </form>
+  </div>
+</div>
+
+<!-- View Modal with Table Layout -->
+<div id="viewModal" class="modal">
+  <div class="modal-content" style="max-width: 500px;">
+    <span class="close" onclick="closeViewModal()">&times;</span>
+    <h3 style="margin-bottom: 15px;">Borrowed Item Details</h3>
+    <table style="width: 100%; border-collapse: collapse;">
+      <tbody>
+        <tr>
+          <th style="text-align: left; padding: 8px; border-bottom: 1px solid #ccc;">Borrow ID</th>
+          <td style="padding: 8px;" id="viewBorrowId"></td>
+        </tr>
+        <tr>
+          <th style="text-align: left; padding: 8px; border-bottom: 1px solid #ccc;">Item Name</th>
+          <td style="padding: 8px;" id="viewItemName"></td>
+        </tr>
+        <tr>
+          <th style="text-align: left; padding: 8px; border-bottom: 1px solid #ccc;">Borrower Name</th>
+          <td style="padding: 8px;" id="viewBorrowerName"></td>
+        </tr>
+        <tr>
+          <th style="text-align: left; padding: 8px; border-bottom: 1px solid #ccc;">Date Borrowed</th>
+          <td style="padding: 8px;" id="viewBorrowDate"></td>
+        </tr>
+        <tr>
+          <th style="text-align: left; padding: 8px; border-bottom: 1px solid #ccc;">Due Date</th>
+          <td style="padding: 8px;" id="viewDueDate"></td>
+        </tr>
+        <tr>
+          <th style="text-align: left; padding: 8px; border-bottom: 1px solid #ccc;">Status</th>
+          <td style="padding: 8px;" id="viewStatus"></td>
+        </tr>
+        <tr>
+          <th style="text-align: left; padding: 8px; border-bottom: 1px solid #ccc;">Quantity</th>
+          <td style="padding: 8px;" id="viewQuantity"></td>
+        </tr>
+        <tr>
+          <th style="text-align: left; padding: 8px;">Notes</th>
+          <td style="padding: 8px;" id="viewNotes"></td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 </div>
 
@@ -61,18 +103,16 @@ th, td { border:1px solid #ddd; padding:8px; text-align:center; }
 async function fetchBorrowedItems(){
   try {
     const res = await fetch('{{ url('inventory/api/borrowed-items') }}');
-    if (!res.ok) {
-      throw new Error('Failed to fetch borrowed items');
-    }
+    if (!res.ok) throw new Error('Failed to fetch borrowed items');
+    
     const data = await res.json();
     const tbody = document.querySelector('#borrowedItemsTable tbody');
     tbody.innerHTML = '';
+
     data.forEach(bi => {
       const statusClass = bi.status === 'overdue' ? 'overdue' : bi.status === 'returned' ? 'returned' : 'active';
-      
-      // Format dates
-      const borrowDate = new Date(bi.borrow_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-      const dueDate = new Date(bi.due_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+      const borrowDate = new Date(bi.borrow_date).toLocaleDateString();
+      const dueDate = new Date(bi.due_date).toLocaleDateString();
 
       const tr = document.createElement('tr');
       tr.innerHTML = `
@@ -86,30 +126,46 @@ async function fetchBorrowedItems(){
         <td>
           <button class="btn btn-extend" onclick="openExtendModal(${bi.id}, '${bi.due_date}')" ${bi.status === 'returned' ? 'disabled' : ''}>Extend</button>
           <button class="btn btn-return" onclick="returnItem(${bi.id})" ${bi.status === 'returned' ? 'disabled' : ''}>Return</button>
+          <button class="btn btn-view" onclick='openViewModal(${JSON.stringify(bi)})'>View</button> <!-- ✅ NEW -->
         </td>`;
       tbody.appendChild(tr);
     });
   } catch (error) {
-    console.error('Error fetching borrowed items:', error);
-    alert('Failed to load borrowed items. Please try again.');
+    console.error('Error:', error);
+    alert('Failed to load borrowed items.');
   }
 }
 
+function openViewModal(data) {
+  document.getElementById('viewBorrowId').textContent = `BORR${data.id.toString().padStart(3, '0')}`;
+  document.getElementById('viewItemName').textContent = data.item.name;
+  document.getElementById('viewBorrowerName').textContent = data.borrower_name;
+  document.getElementById('viewBorrowDate').textContent = new Date(data.borrow_date).toLocaleDateString();
+  document.getElementById('viewDueDate').textContent = new Date(data.due_date).toLocaleDateString();
+  document.getElementById('viewStatus').textContent = data.status;
+  document.getElementById('viewQuantity').textContent = data.quantity_borrowed;
+  document.getElementById('viewNotes').textContent = data.notes || 'No notes.';
+  document.getElementById('viewModal').classList.add('show');
+}
+
+function closeViewModal() {
+  document.getElementById('viewModal').classList.remove('show');
+}
+
 async function returnItem(id) {
-  if (confirm('Mark this item as returned?')) {
-    const res = await fetch(`{{ url('inventory/api/borrowed-items') }}/${id}/return`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-CSRF-TOKEN': '{{ csrf_token() }}'
-      }
-    });
-    if (res.ok) {
-      alert('Item returned successfully!');
-      fetchBorrowedItems();
-    } else {
-      alert('Error returning item');
+  if (!confirm('Mark this item as returned?')) return;
+  const res = await fetch(`{{ url('inventory/api/borrowed-items') }}/${id}/return`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-CSRF-TOKEN': '{{ csrf_token() }}'
     }
+  });
+  if (res.ok) {
+    alert('Item returned successfully!');
+    fetchBorrowedItems();
+  } else {
+    alert('Error returning item');
   }
 }
 
@@ -122,10 +178,8 @@ function calculateNewDueDate(currentDueDate) {
 
 async function extendItem(id) {
   const newDueDate = document.getElementById('newDueDate').value;
-  if (!newDueDate) {
-    alert('Please select a new due date.');
-    return;
-  }
+  if (!newDueDate) return alert('Please select a new due date.');
+  
   try {
     const res = await fetch(`{{ url('inventory/api/borrowed-items') }}/${id}/extend`, {
       method: 'POST',
@@ -133,10 +187,9 @@ async function extendItem(id) {
         'Content-Type': 'application/json',
         'X-CSRF-TOKEN': '{{ csrf_token() }}'
       },
-      body: JSON.stringify({
-        new_due_date: newDueDate
-      })
+      body: JSON.stringify({ new_due_date: newDueDate })
     });
+
     const result = await res.json();
     if (res.ok) {
       alert('Borrow period extended successfully!');
@@ -146,8 +199,8 @@ async function extendItem(id) {
       alert('Error: ' + (result.error || 'Failed to extend borrow period'));
     }
   } catch (error) {
-    console.error('Error extending item:', error);
-    alert('Failed to extend borrow period. Please try again.');
+    console.error(error);
+    alert('Failed to extend borrow period.');
   }
 }
 
@@ -158,6 +211,7 @@ function openExtendModal(id, currentDueDate) {
   calculateNewDueDate(currentDueDate);
   document.getElementById('extendModal').classList.add('show');
 }
+
 function closeExtendModal() {
   document.getElementById('extendModal').classList.remove('show');
 }
